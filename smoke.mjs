@@ -6,7 +6,15 @@
  * the entry modal, the mobile menu, the FAQ accordion, the reviews carousel,
  * the legal modal, the WhatsApp form handler and the floating WhatsApp button.
  *
- * Usage: node smoke.mjs <url>
+ * Usage: node smoke.mjs <url> [home|area]
+ *
+ * Runs in two passes on purpose. Pass A drives the interactive components and
+ * necessarily leaves modals mid-fade; while a modal is transitioning its
+ * visibility has not flipped yet, so it still answers elementFromPoint and
+ * everything below it looks covered. Pass B waits for that to settle and then
+ * does the reachability and layout checks. Collapsing them into one synchronous
+ * evaluate produced phantom failures — the site was fine, the measurement was
+ * taken too early.
  */
 
 const url = process.argv[2];
@@ -71,6 +79,11 @@ function send(method, params = {}) {
   });
 }
 
+const evaluate = async (expression) => {
+  const r = await send('Runtime.evaluate', { expression, returnByValue: true });
+  return r.result.value || [];
+};
+
 await new Promise((res, rej) => {
   ws.addEventListener('open', res, { once: true });
   ws.addEventListener('error', rej, { once: true });
@@ -91,7 +104,8 @@ await send('Runtime.evaluate', { expression: 'try { sessionStorage.clear(); } ca
 await send('Page.reload', { ignoreCache: true });
 await new Promise((r) => setTimeout(r, 2500));
 
-const script = `(() => {
+// ---------------------------------------------------------------- pass A ---
+const passA = `(() => {
   const out = [];
   const isHome = ${isHome};
   const ok = (name, cond, extra) => out.push({ name, pass: !!cond, extra: extra || '' });
@@ -161,6 +175,28 @@ const script = `(() => {
   // --- WhatsApp form handler ---------------------------------------------
   ok('form handler defined', typeof window.handleDispatchForm === 'function');
 
+  return out;
+})()`;
+
+const results = await evaluate(passA);
+
+// Let the pass-A modals finish fading before measuring anything underneath.
+await send('Runtime.evaluate', {
+  expression: `(() => {
+    document.querySelectorAll('.modal.is-open').forEach((m) => m.classList.remove('is-open'));
+    document.querySelectorAll('.is-open').forEach((n) => {
+      if (n.classList.contains('nav') || n.id === 'mobileNav') n.classList.remove('is-open');
+    });
+    return true;
+  })()`,
+});
+await new Promise((r) => setTimeout(r, 900));
+
+// ---------------------------------------------------------------- pass B ---
+const passB = `(() => {
+  const out = [];
+  const ok = (name, cond, extra) => out.push({ name, pass: !!cond, extra: extra || '' });
+
   // --- floating WhatsApp button ------------------------------------------
   const fab = document.querySelector('.fab');
   ok('floating whatsapp button exists', !!fab);
@@ -172,11 +208,11 @@ const script = `(() => {
     const r = fab.getBoundingClientRect();
     ok('fab is on screen', r.width > 0 && r.height > 0 && r.right <= innerWidth + 1);
 
-    // Something must not be sitting on top of it. The Netlify free tier
-    // injects a "Powered by Netlify" badge into the same corner at a higher
-    // z-index than we can set, which silently ate the tap and sent people to
-    // netlify.com instead of WhatsApp. sample the middle of every edge and
-    // the centre: elementFromPoint must land on the button every time.
+    // Nothing may sit on top of it. The Netlify free tier injects a "Powered
+    // by Netlify" badge into the same corner at a higher z-index than the page
+    // can set, which silently ate the tap and sent people to netlify.com
+    // instead of WhatsApp. Probe the centre and the middle of all four edges:
+    // elementFromPoint must land inside the button every time.
     const probe = (x, y) => {
       const el = document.elementFromPoint(x, y);
       return !!el && (el === fab || fab.contains(el));
@@ -191,7 +227,8 @@ const script = `(() => {
       ['right', probe(r.right - 3, cy)],
     ];
     const covered = hits.filter(([, h]) => !h).map(([n]) => n);
-    ok('fab not covered by another element', covered.length === 0, covered.length ? 'covered at: ' + covered.join(', ') : 'all 5 points reachable');
+    ok('fab not covered by another element', covered.length === 0,
+       covered.length ? 'covered at: ' + covered.join(', ') : 'all 5 points reachable');
 
     // 44px is the minimum reliable touch target.
     ok('fab meets 44px tap target', r.width >= 44 && r.height >= 44,
@@ -204,6 +241,18 @@ const script = `(() => {
   ok('no whatsapp button in header', !headerWa);
   const headerTel = header ? header.querySelector('a[href^="tel:"]') : null;
   ok('phone button retained in header', !!headerTel);
+
+  // --- the ticker must not repeat the phone number -----------------------
+  // Test for a phone number itself, not a digit count: legitimate copy here
+  // ("24/7", "20-mile", "30-45 minutes", "24 hours, 7 days") already runs to
+  // a dozen digits, so counting would fail on correct content.
+  const ticker = document.querySelector('.ticker');
+  if (ticker) {
+    const text = ticker.textContent;
+    ok('no tel: link in ticker', !ticker.querySelector('a[href^="tel:"]'));
+    ok('no phone number in ticker', !/(?:0\\d{3,4}\\s*\\d{3}\\s*\\d{3}|\\d{5,})/.test(text),
+       text.trim().replace(/\\s+/g, ' ').slice(0, 70));
+  }
 
   // --- nav is the agreed five links --------------------------------------
   const navLinks = [...document.querySelectorAll('.nav a')].map(a => a.textContent.trim());
@@ -219,8 +268,7 @@ const script = `(() => {
   return out;
 })()`;
 
-const res = await send('Runtime.evaluate', { expression: script, returnByValue: true });
-const results = res.result.value || [];
+results.push(...(await evaluate(passB)));
 
 let failed = 0;
 for (const r of results) {
