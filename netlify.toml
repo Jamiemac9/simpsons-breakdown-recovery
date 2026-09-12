@@ -1,15 +1,32 @@
+# Static multi-page site: every route is a real file on disk.
+#
+# There is deliberately NO catch-all redirect to index.html. A `/*` -> 200
+# rewrite turns every mistyped or removed URL into the homepage served with a
+# 200, which search engines treat as a soft 404. Netlify serves the branded
+# 404.html below for anything genuinely missing.
+
 [build]
   publish = "."
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = false
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Immutable assets: content is versioned by filename via the build scripts.
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

@@ -54,7 +54,7 @@ for f in HTML_FILES:
             counts["anchor"] += 1
             continue
 
-        resolved = (f.parent / target).resolve()
+        resolved = (ROOT / target.lstrip("/")) if target.startswith("/") else (f.parent / target).resolve()
         if not resolved.exists():
             problems.append(f"{f.relative_to(ROOT)}: missing file {target}")
             continue
