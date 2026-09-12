@@ -118,6 +118,18 @@ node shoot.mjs <url> out.png <w> <h>         # screenshot at a true device width
 node shoot.mjs <url> out.png 1440 900 --at="#work"   # screenshot one section
 ```
 
+Regenerate the proposal screenshots (written to `demo/`, not committed):
+
+```bash
+B=https://simpsons-recovery-birmingham.netlify.app
+node shoot.mjs "$B/"                    demo/01-desktop-hero.png 1440 900
+node shoot.mjs "$B/"                    demo/02-mobile-hero.png    390 844
+node shoot.mjs "$B/"                    demo/03-our-work.png      1440 1000 --at="#work"
+node shoot.mjs "$B/"                    demo/04-areas.png         1440 1000 --at="#areas"
+node shoot.mjs "$B/areas/solihull-breakdown-recovery.html" demo/05-area-page.png 1440 1000
+node shoot.mjs "$B/"                    demo/06-modal.png         1440 900  --keep-modal
+```
+
 `smoke.mjs` and `shoot.mjs` drive headless Chrome over CDP. Both need a browser
 listening on port 9333 first:
 

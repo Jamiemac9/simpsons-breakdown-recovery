@@ -100,6 +100,14 @@ if (!keepModal) {
     returnByValue: true,
   });
   await new Promise((r) => setTimeout(r, 400));
+} else {
+  // The entry pop-up only fires once per session, so a previous capture in
+  // this tab would have suppressed it. Clear the flag and reload.
+  await send('Runtime.evaluate', {
+    expression: `try { sessionStorage.clear(); } catch (e) {}`,
+  });
+  await send('Page.reload', { ignoreCache: false });
+  await new Promise((r) => setTimeout(r, 2200));
 }
 
 // Report honesty checks alongside the image.
