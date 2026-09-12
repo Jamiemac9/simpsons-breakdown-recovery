@@ -10,3 +10,7 @@ node_modules/
 # Scratch files used by the local verification scripts
 /_preview.html
 /_diag.html
+
+# Python bytecode from the build scripts
+__pycache__/
+*.pyc

@@ -17,9 +17,11 @@
   <meta property="og:type" content="business.business">
   <meta property="og:url" content="https://www.simpsonsbreakdownrecovery.co.uk/">
   <meta property="og:locale" content="en_GB">
-  <meta property="og:image" content="images/simpsons-white-van-recovery.jpg">
+  <meta property="og:image" content="images/og-image.jpg">
 
-  <link rel="icon" href="images/Simpsons-Breakdown-New-Logo.png.webp">
+  <link rel="icon" href="images/icon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="images/icon-180.png">
+  <link rel="preload" as="image" href="images/logo.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -38,6 +40,7 @@
         "email": "simpsonsbreakdownrecoveryltd@gmail.com",
         "priceRange": "££",
         "image": "https://www.simpsonsbreakdownrecovery.co.uk/images/simpsons-white-van-recovery.jpg",
+        "logo": "https://www.simpsonsbreakdownrecovery.co.uk/images/logo.webp",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "289 Icknield Port Road, At the rear",
@@ -164,29 +167,19 @@
 
     <a href="index.html" class="brand" aria-label="Simpsons Breakdown Recovery Services Ltd — home">
       <span class="brand__plate">
-        <img class="brand__logo" src="images/Simpsons-Breakdown-New-Logo.png.webp" width="300" height="212" alt="Simpsons Breakdown Recovery Services Ltd logo">
-      </span>
-      <span class="brand__text">
-        <span class="brand__name">Simpsons</span>
-        <span class="brand__sub">Breakdown Recovery</span>
+        <img class="brand__logo" src="images/logo.webp" width="661" height="143" alt="Simpsons Breakdown Recovery Services Ltd">
       </span>
     </a>
 
     <nav class="nav" aria-label="Main">
+      <a href="index.html">Home</a>
       <a href="#services">Services</a>
-      <a href="#areas">Areas covered</a>
-      <a href="#reviews">Reviews</a>
-      <a href="#gallery">Our fleet</a>
-      <a href="#case-studies">Case studies</a>
+      <a href="#areas">Areas Covered</a>
+      <a href="#work">Our Work</a>
       <a href="#faq">FAQ</a>
-      <a href="#contact">Contact</a>
     </nav>
 
     <div class="header-actions">
-      <a href="https://wa.me/447706057962?text=Hello%20Simpsons%20Recovery%2C%20I%20need%20help%20with%20my%20vehicle." target="_blank" rel="noopener" class="btn btn--green btn--sm">
-        <svg class="icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.03 6.17c-3.18 0-5.76 2.59-5.76 5.77 0 1.3.38 2.27 1.02 3.28l-.58 2.13 2.18-.57c.98.58 1.91.93 3.14.93 3.18 0 5.77-2.59 5.77-5.77 0-3.19-2.58-5.77-5.77-5.77zm3.39 8.24c-.14.4-.84.77-1.17.82-.3.05-.68.06-1.09-.07-.25-.08-.58-.19-.99-.36-1.74-.75-2.87-2.5-2.96-2.62-.09-.11-.71-.94-.71-1.79s.45-1.27.61-1.45c.16-.17.35-.22.46-.22h.33c.11 0 .25-.04.39.3.14.35.49 1.2.53 1.29.04.09.07.19.01.3-.06.12-.09.19-.17.29l-.26.3c-.09.09-.18.18-.08.36.1.17.45.74.96 1.2.66.59 1.22.77 1.4.86.17.09.27.07.37-.04.1-.12.43-.51.55-.68.12-.17.23-.14.39-.09.16.06 1.01.48 1.18.56.17.09.29.13.33.2.05.07.05.42-.1.83z"/></svg>
-        WhatsApp
-      </a>
       <a href="tel:07706057962" class="btn btn--red btn--sm">
         <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
         <span class="nowrap">07706 057962</span>
@@ -198,16 +191,13 @@
   </div>
 
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+    <a href="index.html">Home</a>
     <a href="#services">Services</a>
-    <a href="#areas">Areas covered</a>
-    <a href="#reviews">Reviews</a>
-    <a href="#gallery">Our fleet</a>
-    <a href="#case-studies">Case studies</a>
+    <a href="#areas">Areas Covered</a>
+    <a href="#work">Our Work</a>
     <a href="#faq">FAQ</a>
-    <a href="#contact">Contact</a>
     <div class="mobile-nav__cta">
       <a href="tel:07706057962" class="btn btn--red btn--block">Call 07706 057962</a>
-      <a href="https://wa.me/447706057962" target="_blank" rel="noopener" class="btn btn--green btn--block">Send WhatsApp location</a>
     </div>
   </nav>
 </header>
@@ -216,43 +206,36 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="shell hero__grid">
+    <div class="hero__bg" style="background-image:url('images/Simpsons-recovery-on-roadside.jpg')" aria-hidden="true"></div>
+    <div class="hero__scrim" aria-hidden="true"></div>
 
-      <div>
-        <span class="pill"><span class="dot"></span> Edgbaston base &bull; 20-mile radius</span>
+    <div class="shell hero__inner">
+      <span class="pill"><span class="dot"></span> Edgbaston base &bull; 20-mile radius</span>
 
-        <h1>Breakdown recovery <span class="hero__accent">Birmingham &amp; West Midlands</span></h1>
+      <h1>Breakdown recovery <span class="hero__accent">Birmingham &amp; West Midlands</span></h1>
 
-        <p class="lead hero__lead">
-          Broken down at home, on the ring road or stranded on the M6? Simpsons Breakdown Recovery
-          Services Ltd has been recovering cars, vans and motorbikes across Birmingham since 2005.
-          Call us and you speak to a local operator — not a call centre.
-        </p>
+      <p class="lead hero__lead">
+        Broken down at home, on the ring road or stranded on the M6? Simpsons Breakdown Recovery
+        Services Ltd has been recovering cars, vans and motorbikes across Birmingham since 2005.
+        Call us and you speak to a local operator — not a call centre.
+      </p>
 
-        <div class="hero__cta">
-          <a href="tel:07706057962" class="btn btn--red btn--lg">
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-            Call 07706 057962
-          </a>
-          <a href="https://wa.me/447706057962?text=Hi%20Simpsons%20Recovery%2C%20I%20need%20recovery.%20My%20location%20is%3A" target="_blank" rel="noopener" class="btn btn--green btn--lg">
-            <svg class="icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.03 6.17c-3.18 0-5.76 2.59-5.76 5.77 0 1.3.38 2.27 1.02 3.28l-.58 2.13 2.18-.57c.98.58 1.91.93 3.14.93 3.18 0 5.77-2.59 5.77-5.77 0-3.19-2.58-5.77-5.77-5.77zm3.39 8.24c-.14.4-.84.77-1.17.82-.3.05-.68.06-1.09-.07-.25-.08-.58-.19-.99-.36-1.74-.75-2.87-2.5-2.96-2.62-.09-.11-.71-.94-.71-1.79s.45-1.27.61-1.45c.16-.17.35-.22.46-.22h.33c.11 0 .25-.04.39.3.14.35.49 1.2.53 1.29.04.09.07.19.01.3-.06.12-.09.19-.17.29l-.26.3c-.09.09-.18.18-.08.36.1.17.45.74.96 1.2.66.59 1.22.77 1.4.86.17.09.27.07.37-.04.1-.12.43-.51.55-.68.12-.17.23-.14.39-.09.16.06 1.01.48 1.18.56.17.09.29.13.33.2.05.07.05.42-.1.83z"/></svg>
-            Send WhatsApp location
-          </a>
-        </div>
-
-        <a class="review-badge" href="https://share.google/FIO6KZSxKO3p8ohXX" target="_blank" rel="noopener">
-          <span class="stars" aria-hidden="true">★★★★★</span>
-          <span><strong style="color:#fff">4.9 rating</strong> &bull; 229 Google reviews</span>
-          <span class="review-badge__link">Read them &rarr;</span>
+      <div class="hero__cta">
+        <a href="tel:07706057962" class="btn btn--red btn--lg">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          Call 07706 057962
+        </a>
+        <a href="https://wa.me/447706057962?text=Hi%20Simpsons%20Recovery%2C%20I%20need%20recovery.%20My%20location%20is%3A" target="_blank" rel="noopener" class="btn btn--green btn--lg">
+          <svg class="icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.03 6.17c-3.18 0-5.76 2.59-5.76 5.77 0 1.3.38 2.27 1.02 3.28l-.58 2.13 2.18-.57c.98.58 1.91.93 3.14.93 3.18 0 5.77-2.59 5.77-5.77 0-3.19-2.58-5.77-5.77-5.77zm3.39 8.24c-.14.4-.84.77-1.17.82-.3.05-.68.06-1.09-.07-.25-.08-.58-.19-.99-.36-1.74-.75-2.87-2.5-2.96-2.62-.09-.11-.71-.94-.71-1.79s.45-1.27.61-1.45c.16-.17.35-.22.46-.22h.33c.11 0 .25-.04.39.3.14.35.49 1.2.53 1.29.04.09.07.19.01.3-.06.12-.09.19-.17.29l-.26.3c-.09.09-.18.18-.08.36.1.17.45.74.96 1.2.66.59 1.22.77 1.4.86.17.09.27.07.37-.04.1-.12.43-.51.55-.68.12-.17.23-.14.39-.09.16.06 1.01.48 1.18.56.17.09.29.13.33.2.05.07.05.42-.1.83z"/></svg>
+          Send WhatsApp location
         </a>
       </div>
 
-      <div class="hero-photo">
-        <img src="images/simpsons-white-van-recovery.jpg" width="1200" height="1200"
-             alt="Simpsons Breakdown Recovery flatbed truck loading a white Renault Trafic van in Birmingham"
-             fetchpriority="high" decoding="async">
-      </div>
-
+      <a class="review-badge" href="https://share.google/FIO6KZSxKO3p8ohXX" target="_blank" rel="noopener">
+        <span class="stars" aria-hidden="true">★★★★★</span>
+        <span><strong style="color:#fff">4.9 rating</strong> &bull; 229 Google reviews</span>
+        <span class="review-badge__link">Read them &rarr;</span>
+      </a>
     </div>
   </section>
 
@@ -298,53 +281,12 @@
     </div>
   </section>
 
-  <!-- HOW IT WORKS -->
-  <section class="section">
-    <div class="shell">
-      <div class="section-head">
-        <span class="eyebrow">Straightforward and stress-free</span>
-        <h2>How a Simpsons recovery works</h2>
-        <p class="muted">Three steps from the phone call to your vehicle sitting outside your garage.</p>
-      </div>
-
-      <div class="grid grid-3">
-        <article class="panel">
-          <div class="stat__value mb-sm">01</div>
-          <h3 class="mb-sm">Call or send your pin</h3>
-          <p class="muted small mb-0">
-            Ring <a href="tel:07706057962" class="text-red"><strong>07706 057962</strong></a> or drop a WhatsApp
-            location pin. You speak to Dean or an operator on the road — nobody reads from a script, and
-            nobody asks you to hold.
-          </p>
-        </article>
-
-        <article class="panel">
-          <div class="stat__value mb-sm">02</div>
-          <h3 class="mb-sm">Get a price and an arrival window</h3>
-          <p class="muted small mb-0">
-            We agree a fixed price before anything moves — no hidden mileage surcharge and no
-            after-hours loading. You're told which truck is coming and roughly when it will reach you.
-          </p>
-        </article>
-
-        <article class="panel">
-          <div class="stat__value mb-sm">03</div>
-          <h3 class="mb-sm">Loaded, secured, delivered</h3>
-          <p class="muted small mb-0">
-            Your vehicle is winched onto the tilt-and-slide bed, strapped down and taken to the
-            garage, tyre fitter, dealership or driveway you choose. Fully insured, goods in transit.
-          </p>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <!-- SERVICES -->
-  <section class="section section--alt" id="services">
+  <section class="section" id="services">
     <div class="shell">
       <div class="section-head">
         <span class="eyebrow">24/7 towing and roadside assistance</span>
-        <h2>Recovery services we provide</h2>
+        <h2>Breakdown recovery services we provide</h2>
         <p class="muted">Cars, vans, 4x4s, motorbikes and non-runners — including the difficult jobs other firms turn down.</p>
       </div>
 
@@ -412,10 +354,10 @@
         <article class="service-row">
           <div class="service-row__num">06</div>
           <div class="service-row__name">
-            <h3>Accident, non-runner &amp; scrap transport</h3>
-            <span class="service-row__tag">Insurance &amp; end-of-life</span>
+            <h3>Accident, non-runner &amp; trailer transport</h3>
+            <span class="service-row__tag">Insurance, events &amp; end-of-life</span>
           </div>
-          <p class="service-row__desc">Scene clearance after a collision, documented transport for insurance claims, moving non-runners between garages, and long-distance vehicle transport arranged in advance.</p>
+          <p class="service-row__desc">Scene clearance after a collision, documented transport for insurance claims, moving non-runners between garages, and towing trailers or catering units to events — arranged in advance.</p>
           <div class="service-row__cta">
             <a href="tel:07706057962" class="btn btn--ghost">Enquire now</a>
           </div>
@@ -424,270 +366,265 @@
     </div>
   </section>
 
-  <!-- AREAS -->
-  <section class="section" id="areas">
+  <!-- AREAS COVERED -->
+  <section class="section section--alt" id="areas">
     <div class="shell">
       <div class="section-head">
         <span class="eyebrow">Local coverage &bull; 20-mile radius</span>
         <h2>Where we recover</h2>
-        <p class="muted">Based on Icknield Port Road in Edgbaston (B16), we run a 20-mile radius across Birmingham and the West Midlands. Every area below has its own page with local ETAs, postcodes and the roads we know best.</p>
+        <p class="muted">We run a 20-mile radius from our Edgbaston depot. Every area has its own page with local postcodes, response times and the roads we know best.</p>
       </div>
 
-      <div class="grid grid-3">
+      <div class="grid grid-4">
+        <a class="area-tile area-tile--base" href="areas/edgbaston-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Edgbaston</span>
+            <span class="area-tile__meta">Depot base &bull; B15, B16</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Edgbaston</h3>
-              <span class="area-card__badge">Depot base</span>
-            </div>
-            <p class="area-card__desc">Our home depot. Fastest response for Edgbaston Village, Five Ways, Hagley Road and the Botanical Gardens.</p>
-            <ul class="area-card__meta">
-              <li>B15, B16, B17</li>
-              <li>Typical arrival 15–25 min</li>
-            </ul>
-          </div>
-          <a href="areas/edgbaston-breakdown-recovery.html" class="btn btn--ghost btn--block">Edgbaston recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/harborne-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Harborne</span>
+            <span class="area-tile__meta">1.8 mi &bull; B17</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Harborne</h3>
-              <span class="area-card__badge">1.8 miles</span>
-            </div>
-            <p class="area-card__desc">Covering Harborne High Street, the Queen Elizabeth Hospital perimeter, Metchley and the university campus.</p>
-            <ul class="area-card__meta">
-              <li>B17</li>
-              <li>Typical arrival 20–30 min</li>
-            </ul>
-          </div>
-          <a href="areas/harborne-breakdown-recovery.html" class="btn btn--ghost btn--block">Harborne recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/birmingham-city-centre-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">City Centre</span>
+            <span class="area-tile__meta">1.5 mi &bull; B1–B5</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">City centre</h3>
-              <span class="area-card__badge">1.5 miles</span>
-            </div>
-            <p class="area-card__desc">Low-clearance extraction from Bullring, Mailbox and Broad Street multi-storeys, plus A38(M) and the Queensway tunnels.</p>
-            <ul class="area-card__meta">
-              <li>B1, B2, B3, B4, B5</li>
-              <li>Typical arrival 20–35 min</li>
-            </ul>
-          </div>
-          <a href="areas/birmingham-city-centre-breakdown-recovery.html" class="btn btn--ghost btn--block">City centre recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/smethwick-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Smethwick</span>
+            <span class="area-tile__meta">2.2 mi &bull; B66, B67</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Smethwick</h3>
-              <span class="area-card__badge">2.2 miles</span>
-            </div>
-            <p class="area-card__desc">Cars and commercial vehicles across Smethwick, Bearwood, Cape Hill and the Galton Bridge corridor.</p>
-            <ul class="area-card__meta">
-              <li>B66, B67</li>
-              <li>Typical arrival 20–30 min</li>
-            </ul>
-          </div>
-          <a href="areas/smethwick-breakdown-recovery.html" class="btn btn--ghost btn--block">Smethwick recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/perry-barr-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Perry Barr</span>
+            <span class="area-tile__meta">3.6 mi &bull; B42</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Perry Barr</h3>
-              <span class="area-card__badge">3.6 miles</span>
-            </div>
-            <p class="area-card__desc">Perry Barr, Alexander Stadium, One Stop and the A34 Walsall Road dual carriageway.</p>
-            <ul class="area-card__meta">
-              <li>B42</li>
-              <li>Typical arrival 25–35 min</li>
-            </ul>
-          </div>
-          <a href="areas/perry-barr-breakdown-recovery.html" class="btn btn--ghost btn--block">Perry Barr recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/west-bromwich-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">West Bromwich</span>
+            <span class="area-tile__meta">4.5 mi &bull; B70, B71</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">West Bromwich</h3>
-              <span class="area-card__badge">4.5 miles</span>
-            </div>
-            <p class="area-card__desc">Round-the-clock cover for M5 junction 1, New Square, Sandwell Valley and the A41 Expressway.</p>
-            <ul class="area-card__meta">
-              <li>B70, B71</li>
-              <li>Typical arrival 25–35 min</li>
-            </ul>
-          </div>
-          <a href="areas/west-bromwich-breakdown-recovery.html" class="btn btn--ghost btn--block">West Bromwich recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/erdington-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Erdington</span>
+            <span class="area-tile__meta">5.2 mi &bull; B23, B24</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Erdington</h3>
-              <span class="area-card__badge">5.2 miles</span>
-            </div>
-            <p class="area-card__desc">Erdington High Street, Tyburn Road industrial estates and the M6 junction 6 approaches.</p>
-            <ul class="area-card__meta">
-              <li>B23, B24</li>
-              <li>Typical arrival 25–40 min</li>
-            </ul>
-          </div>
-          <a href="areas/erdington-breakdown-recovery.html" class="btn btn--ghost btn--block">Erdington recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/halesowen-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Halesowen</span>
+            <span class="area-tile__meta">6.4 mi &bull; B62, B63</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Halesowen</h3>
-              <span class="area-card__badge">6.4 miles</span>
-            </div>
-            <p class="area-card__desc">Halesowen town centre, Manor Way and direct M5 junction 3 access for motorway callouts.</p>
-            <ul class="area-card__meta">
-              <li>B62, B63</li>
-              <li>Typical arrival 25–35 min</li>
-            </ul>
-          </div>
-          <a href="areas/halesowen-breakdown-recovery.html" class="btn btn--ghost btn--block">Halesowen recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/dudley-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Dudley</span>
+            <span class="area-tile__meta">7.8 mi &bull; DY1–DY3</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Dudley</h3>
-              <span class="area-card__badge">7.8 miles</span>
-            </div>
-            <p class="area-card__desc">Dudley town centre, Castlegate, Gornal and the A4123 Birmingham New Road.</p>
-            <ul class="area-card__meta">
-              <li>DY1, DY2, DY3</li>
-              <li>Typical arrival 30–40 min</li>
-            </ul>
-          </div>
-          <a href="areas/dudley-breakdown-recovery.html" class="btn btn--ghost btn--block">Dudley recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/sutton-coldfield-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Sutton Coldfield</span>
+            <span class="area-tile__meta">8.2 mi &bull; B72–B75</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Sutton Coldfield</h3>
-              <span class="area-card__badge">8.2 miles</span>
-            </div>
-            <p class="area-card__desc">Sutton Coldfield, Four Oaks, Boldmere and Wylde Green, including the A5127 Lichfield Road.</p>
-            <ul class="area-card__meta">
-              <li>B72, B73, B74, B75</li>
-              <li>Typical arrival 30–45 min</li>
-            </ul>
-          </div>
-          <a href="areas/sutton-coldfield-breakdown-recovery.html" class="btn btn--ghost btn--block">Sutton Coldfield recovery &rarr;</a>
-        </article>
+        <a class="area-tile" href="areas/solihull-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Solihull</span>
+            <span class="area-tile__meta">8.5 mi &bull; B90–B93</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
 
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Solihull</h3>
-              <span class="area-card__badge">8.5 miles</span>
-            </div>
-            <p class="area-card__desc">Prestige, electric and commercial vehicle recovery for Solihull, Shirley, Touchwood and M42 junction 5.</p>
-            <ul class="area-card__meta">
-              <li>B90, B91, B92, B93</li>
-              <li>Typical arrival 30–45 min</li>
-            </ul>
-          </div>
-          <a href="areas/solihull-breakdown-recovery.html" class="btn btn--ghost btn--block">Solihull recovery &rarr;</a>
-        </article>
-
-        <article class="area-card">
-          <div>
-            <div class="area-card__head">
-              <h3 class="area-card__name">Walsall</h3>
-              <span class="area-card__badge">9.5 miles</span>
-            </div>
-            <p class="area-card__desc">Walsall, Pleck and Bescot, with priority cover around M6 junctions 9 and 10.</p>
-            <ul class="area-card__meta">
-              <li>WS1, WS2, WS3</li>
-              <li>Typical arrival 30–45 min</li>
-            </ul>
-          </div>
-          <a href="areas/walsall-breakdown-recovery.html" class="btn btn--ghost btn--block">Walsall recovery &rarr;</a>
-        </article>
-
+        <a class="area-tile" href="areas/walsall-breakdown-recovery.html">
+          <span>
+            <span class="area-tile__name">Walsall</span>
+            <span class="area-tile__meta">9.5 mi &bull; WS1–WS3</span>
+          </span>
+          <span class="area-tile__arrow" aria-hidden="true">&rarr;</span>
+        </a>
       </div>
+
+      <p class="muted small center mt-lg mb-0">
+        Just outside the radius? Call <a href="tel:07706057962" class="text-red"><strong>07706 057962</strong></a> with your location and we will tell you straight away whether we can reach you.
+      </p>
     </div>
   </section>
 
-  <!-- GALLERY -->
-  <section class="section section--alt" id="gallery">
+  <!-- OUR WORK -->
+  <section class="section" id="work">
     <div class="shell">
       <div class="section-head">
-        <span class="eyebrow">Real trucks, real jobs</span>
-        <h2>Our fleet on the road</h2>
-        <p class="muted">Tilt-and-slide flatbeds with low-clearance equipment, out working across Birmingham every day.</p>
+        <span class="eyebrow">Real jobs, real trucks</span>
+        <h2>Our work</h2>
+        <p class="muted">Every photo below is our own flatbed on a genuine job across Birmingham and the West Midlands — cars, work vans, plant service vehicles and trailers.</p>
       </div>
 
       <div class="grid grid-3">
-        <figure class="media">
-          <img src="images/simpsons-white-van-recovery.jpg" width="1200" height="1200" loading="lazy" decoding="async"
-               alt="Simpsons Breakdown Recovery loading a white Renault Trafic van onto the flatbed in Birmingham">
-          <figcaption class="media__caption">
-            <h3>Van recovery, Birmingham</h3>
-            <p>Renault Trafic loaded and strapped down on the flatbed for transport to the owner's garage.</p>
-          </figcaption>
-        </figure>
 
-        <figure class="media">
-          <img src="images/Simpsons-recovery-on-roadside.jpg" width="1200" height="1200" loading="lazy" decoding="async"
-               alt="Simpsons Breakdown Recovery Canter flatbed truck parked on a Birmingham residential street">
-          <figcaption class="media__caption">
-            <h3>On call across the city</h3>
-            <p>One of our Canter flatbeds positioned on a Birmingham residential street, ready for the next callout.</p>
-          </figcaption>
-        </figure>
+        <article class="work-card">
+          <div class="work-card__media">
+            <img src="images/simpsons-white-van-recovery.jpg" width="1100" height="1100" loading="lazy" decoding="async"
+                 alt="Simpsons Breakdown Recovery flatbed loading a white Renault Trafic work van for transport on a Birmingham residential street">
+            <span class="work-card__badge">Van recovery</span>
+          </div>
+          <div class="work-card__body">
+            <h3>Work van collected from a residential street</h3>
+            <p>A Renault Trafic with a roof rack that would not start, winched onto the flatbed and taken on to the owner’s garage without blocking the road for the neighbours.</p>
+            <div class="work-card__meta">
+              <span>Birmingham</span><span>Renault Trafic</span><span>Flatbed transport</span>
+            </div>
+          </div>
+        </article>
 
-        <figure class="media">
-          <img src="images/Simpsons-revocery-food-truck.jpg" width="1480" height="1480" loading="lazy" decoding="async"
-               alt="Simpsons Breakdown Recovery transporting a white box van on the flatbed">
-          <figcaption class="media__caption">
-            <h3>Commercial transport</h3>
-            <p>Box van collected and transported for a local business — loaded safely without damage to the bodywork.</p>
-          </figcaption>
-        </figure>
+        <article class="work-card">
+          <div class="work-card__media">
+            <img src="images/805784237_1721916533268722_3557018202462519091_n.jpg" width="1100" height="825" loading="lazy" decoding="async"
+                 alt="Silver Vauxhall Vivaro panel van strapped down on a Simpsons Breakdown Recovery flatbed truck in the West Midlands">
+            <span class="work-card__badge">Panel van</span>
+          </div>
+          <div class="work-card__body">
+            <h3>Vivaro strapped down for transport</h3>
+            <p>A silver panel van loaded and secured with wheel straps, ready to be moved across the West Midlands. Everything is checked before the truck pulls away.</p>
+            <div class="work-card__meta">
+              <span>West Midlands</span><span>Vauxhall Vivaro</span><span>Straps and wheel chocks</span>
+            </div>
+          </div>
+        </article>
 
-        <figure class="media">
-          <img src="images/Simpsons-food-truck-nottybites-revocery.jpg" width="1600" height="1600" loading="lazy" decoding="async"
-               alt="Simpsons Breakdown Recovery flatbed carrying a catering van">
-          <figcaption class="media__caption">
-            <h3>Catering van collected</h3>
-            <p>A food truck recovered and moved for a Birmingham catering business so trading could resume.</p>
-          </figcaption>
-        </figure>
+        <article class="work-card">
+          <div class="work-card__media">
+            <img src="images/BR-Pic-2.jpg.webp" width="960" height="720" loading="lazy" decoding="async"
+                 alt="Finning CAT service truck with a mounted crane loaded on a Simpsons flatbed recovery truck at a dealer service yard">
+            <span class="work-card__badge">Commercial</span>
+          </div>
+          <div class="work-card__body">
+            <h3>Finning CAT service truck moved</h3>
+            <p>A dropside service vehicle with an orange folding crane on the back — a heavy, awkward load recovered from a dealer yard and moved on for repair.</p>
+            <div class="work-card__meta">
+              <span>Plant service vehicle</span><span>Crane mounted</span><span>Dealer yard collection</span>
+            </div>
+          </div>
+        </article>
 
-        <figure class="media">
-          <img src="images/BR-Pic-2.jpg.webp" width="960" height="720" loading="lazy" decoding="async"
-               alt="Vehicle secured on the back of a Simpsons Breakdown Recovery truck">
-          <figcaption class="media__caption">
-            <h3>Loaded and secured</h3>
-            <p>Vehicle strapped to the tilt-and-slide bed before transport, with the load checked before setting off.</p>
-          </figcaption>
-        </figure>
+        <article class="work-card">
+          <div class="work-card__media">
+            <img src="images/Simpsons-food-truck-nottybites-revocery.jpg" width="1100" height="1100" loading="lazy" decoding="async"
+                 alt="NottyBites catering trailer loaded on a Simpsons Breakdown Recovery flatbed at an outdoor showground with marquees">
+            <span class="work-card__badge">Catering trailer</span>
+          </div>
+          <div class="work-card__body">
+            <h3>NottyBites trailer loaded at a showground</h3>
+            <p>A catering trailer lifted and secured onto the flatbed at a showground — the same care we take with a car, because a trader’s living is inside it.</p>
+            <div class="work-card__meta">
+              <span>Event transport</span><span>Catering trailer</span><span>Showground</span>
+            </div>
+          </div>
+        </article>
 
-        <figure class="media">
-          <img src="images/805784237_1721916533268722_3557018202462519091_n.jpg" width="2048" height="1536" loading="lazy" decoding="async"
-               alt="Simpsons Breakdown Recovery Services Ltd truck working at a breakdown">
-          <figcaption class="media__caption">
-            <h3>Roadside job in progress</h3>
-            <p>Another recovery completed across the Birmingham and West Midlands area.</p>
-          </figcaption>
-        </figure>
+        <article class="work-card">
+          <div class="work-card__media">
+            <img src="images/Simpsons-revocery-food-truck.jpg" width="1100" height="1100" loading="lazy" decoding="async"
+                 alt="Simpsons Breakdown Recovery truck towing a NottyBites Indian street food trailer at an outdoor event site">
+            <span class="work-card__badge">Trailer tow</span>
+          </div>
+          <div class="work-card__body">
+            <h3>Street food trailer towed between events</h3>
+            <p>The NottyBites Indian street food trailer hitched and towed to its next event — planned transport rather than an emergency, booked in advance.</p>
+            <div class="work-card__meta">
+              <span>Event site</span><span>Trailer tow</span><span>Booked in advance</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-card__media">
+            <img src="images/Simpsons-recovery-on-roadside.jpg" width="1100" height="1100" loading="lazy" decoding="async"
+                 alt="Simpsons Breakdown Recovery Canter flatbed truck on call on a residential street in Birmingham">
+            <span class="work-card__badge">On call</span>
+          </div>
+          <div class="work-card__body">
+            <h3>Our flatbed on call in Birmingham</h3>
+            <p>One of the Canter flatbeds parked up between callouts — tilt-and-slide bed, lockers loaded and ready to go anywhere in the 20-mile radius.</p>
+            <div class="work-card__meta">
+              <span>Birmingham</span><span>Mitsubishi Canter</span><span>24/7 on call</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <h3 class="center mt-lg" style="margin-bottom:8px">Jobs other firms turn down</h3>
+      <p class="muted center mb-lg" style="max-width:640px;margin:0 auto 26px">Three examples of the awkward work we take on when someone else has already said no.</p>
+
+      <div class="grid grid-3">
+        <article class="panel">
+          <span class="service-row__tag">Low-ceiling car park</span>
+          <h3 class="mt-md mb-sm">Non-runner out of an underground garage</h3>
+          <p class="muted small mb-0">
+            <strong class="text-cyan">Where:</strong> Birmingham city centre basement bay.<br>
+            <strong class="text-cyan">Vehicle:</strong> Saloon, would not start, 1.9 m ceiling with tight corners.<br>
+            <strong class="text-cyan">What we did:</strong> Wheel skates and a compact winch brought it out without touching the ceiling or bodywork, then delivered it to the customer's chosen diagnostic specialist.
+          </p>
+        </article>
+
+        <article class="panel">
+          <span class="service-row__tag">Seized wheel</span>
+          <h3 class="mt-md mb-sm">Locked rear brake on a high street</h3>
+          <p class="muted small mb-0">
+            <strong class="text-cyan">Where:</strong> Harborne High Street.<br>
+            <strong class="text-cyan">Vehicle:</strong> Estate car with a seized rear caliper and a flat tyre.<br>
+            <strong class="text-cyan">What we did:</strong> Freed the stuck disc at the roadside, skated the wheel onto the flatbed and dropped the car with the owner's own tyre fitter so the repair could be finished there.
+          </p>
+        </article>
+
+        <article class="panel">
+          <span class="service-row__tag">Motorway, night</span>
+          <h3 class="mt-md mb-sm">Loaded van down at Spaghetti Junction</h3>
+          <p class="muted small mb-0">
+            <strong class="text-cyan">Where:</strong> M6 northbound, junction 6 approaches.<br>
+            <strong class="text-cyan">Vehicle:</strong> Fully loaded commercial delivery van.<br>
+            <strong class="text-cyan">What we did:</strong> On scene quickly from the Edgbaston base, made the position safe, recovered the van with the load on board and took driver and cargo back to the company's logistics hub.
+          </p>
+        </article>
+      </div>
+
+      <div class="center mt-lg">
+        <a href="tel:07706057962" class="btn btn--red btn--lg">Call 07706 057962 for a recovery</a>
       </div>
     </div>
   </section>
 
   <!-- REVIEWS -->
-  <section class="section" id="reviews">
+  <section class="section section--alt" id="reviews">
     <div class="shell">
       <div class="section-head">
         <span class="eyebrow">Verified Google reviews</span>
@@ -818,7 +755,7 @@
             </div>
             <p class="review__quote">“Simpson recovery was great, really helped me get my car sorted without costing a fortune. I had an issue getting my wheel off and needed to get my car towed to a specialist. I called him and was able to quickly arrange a time that worked for me, he towed the vehicle there, waited and dropped the car back to my tyre fitter to finish the job. Really friendly, professional and knowledgeable too.”</p>
           </div>
-          <span class="review__tag">✓ Specialise transport and wait-back</span>
+          <span class="review__tag">✓ Specialist transport and wait-back</span>
         </article>
 
       </div>
@@ -831,46 +768,41 @@
     </div>
   </section>
 
-  <!-- CASE STUDIES -->
-  <section class="section section--alt" id="case-studies">
+  <!-- HOW IT WORKS -->
+  <section class="section" id="process">
     <div class="shell">
       <div class="section-head">
-        <span class="eyebrow">Jobs we get called for</span>
-        <h2>Case studies</h2>
-        <p class="muted">Three examples of the work we take on when easier jobs have already been turned down.</p>
+        <span class="eyebrow">Straightforward and stress-free</span>
+        <h2>How a Simpsons recovery works</h2>
+        <p class="muted">Three steps from the phone call to your vehicle sitting outside your garage.</p>
       </div>
 
       <div class="grid grid-3">
         <article class="panel">
-          <span class="service-row__tag">Low-ceiling car park</span>
-          <h3 class="mt-md mb-sm">Non-runner out of an underground garage</h3>
+          <div class="stat__value mb-sm">01</div>
+          <h3 class="mb-sm">Call or send your pin</h3>
           <p class="muted small mb-0">
-            <strong class="text-cyan">Where:</strong> Birmingham city centre basement bay.<br>
-            <strong class="text-cyan">Vehicle:</strong> Saloon, would not start, 1.9 m ceiling with tight corners.<br>
-            <strong class="text-cyan">What we did:</strong> Wheel skates and a compact winch brought it out without
-            touching the ceiling or bodywork, then delivered it to the customer's chosen diagnostic specialist.
+            Ring <a href="tel:07706057962" class="text-red"><strong>07706 057962</strong></a> or drop a WhatsApp
+            location pin. You speak to Dean or an operator on the road — nobody reads from a script, and
+            nobody asks you to hold.
           </p>
         </article>
 
         <article class="panel">
-          <span class="service-row__tag">Seized wheel</span>
-          <h3 class="mt-md mb-sm">Locked rear brake on a high street</h3>
+          <div class="stat__value mb-sm">02</div>
+          <h3 class="mb-sm">Get a price and an arrival window</h3>
           <p class="muted small mb-0">
-            <strong class="text-cyan">Where:</strong> Harborne High Street.<br>
-            <strong class="text-cyan">Vehicle:</strong> Estate car with a seized rear caliper and a flat tyre.<br>
-            <strong class="text-cyan">What we did:</strong> Freed the stuck disc at the roadside, skated the wheel onto the
-            flatbed and dropped the car with the owner's own tyre fitter so the repair could be finished there.
+            We agree a fixed price before anything moves — no hidden mileage surcharge and no
+            after-hours loading. You're told which truck is coming and roughly when it will reach you.
           </p>
         </article>
 
         <article class="panel">
-          <span class="service-row__tag">Motorway, night</span>
-          <h3 class="mt-md mb-sm">Loaded van down at Spaghetti Junction</h3>
+          <div class="stat__value mb-sm">03</div>
+          <h3 class="mb-sm">Loaded, secured, delivered</h3>
           <p class="muted small mb-0">
-            <strong class="text-cyan">Where:</strong> M6 northbound, junction 6 approaches.<br>
-            <strong class="text-cyan">Vehicle:</strong> Fully loaded commercial delivery van.<br>
-            <strong class="text-cyan">What we did:</strong> On scene quickly from the Edgbaston base, made the position safe,
-            recovered the van with the load on board and took driver and cargo back to the company's logistics hub.
+            Your vehicle is winched onto the tilt-and-slide bed, strapped down and taken to the
+            garage, tyre fitter, dealership or driveway you choose. Fully insured, goods in transit.
           </p>
         </article>
       </div>
@@ -878,7 +810,7 @@
   </section>
 
   <!-- ABOUT -->
-  <section class="section" id="about">
+  <section class="section section--alt" id="about">
     <div class="shell">
       <div class="grid grid-2" style="align-items:center">
         <div>
@@ -891,8 +823,8 @@
           </p>
           <p class="muted">
             That is why we can give a realistic arrival time instead of a vague "sometime today", and why we
-            take on the awkward jobs: seized brakes, locked steering, basement car parks and vehicles that
-            will not roll.
+            take on the awkward jobs: seized brakes, locked steering, basement car parks, plant service
+            vehicles and catering trailers.
           </p>
         </div>
 
@@ -917,7 +849,7 @@
   </section>
 
   <!-- FAQ -->
-  <section class="section section--alt" id="faq">
+  <section class="section" id="faq">
     <div class="shell">
       <div class="section-head">
         <span class="eyebrow">Common questions</span>
@@ -951,6 +883,14 @@
 
         <div class="faq__item">
           <button class="faq__q" type="button">
+            <span>Do you tow trailers, catering units and plant?</span>
+            <span class="faq__chev" aria-hidden="true">▾</span>
+          </button>
+          <div class="faq__a"><div><p>We do. As well as cars and vans we move catering trailers, box trailers and commercial vehicles such as plant service trucks — see the <a href="#work" class="text-cyan">Our Work</a> section. These are usually planned jobs booked in advance, so give us a call with the trailer size and collection point.</p></div></div>
+        </div>
+
+        <div class="faq__item">
+          <button class="faq__q" type="button">
             <span>Do you charge extra at night or at weekends?</span>
             <span class="faq__chev" aria-hidden="true">▾</span>
           </button>
@@ -970,14 +910,14 @@
             <span>Which postcodes do you cover?</span>
             <span class="faq__chev" aria-hidden="true">▾</span>
           </button>
-          <div class="faq__a"><div><p>We run a 20-mile radius from Edgbaston (B16), covering Birmingham and the West Midlands including B1–B17, B23, B24, B42, B62–B75, B90–B93, B66–B71, DY1–DY3 and WS1–WS3, plus the M5, M6 and M42. If you are just outside, call with your location and we will tell you straight away whether we can help.</p></div></div>
+          <div class="faq__a"><div><p>We run a 20-mile radius from Edgbaston (B16), covering Birmingham and the West Midlands including B1–B17, B23, B24, B42, B62–B75, B90–B93, B66–B71, DY1–DY3 and WS1–WS3, plus the M5, M6 and M42. See <a href="#areas" class="text-cyan">Areas Covered</a> for the full list — if you are just outside, call with your location and we will tell you straight away whether we can help.</p></div></div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- CONTACT -->
-  <section class="section" id="contact">
+  <section class="section section--alt" id="contact">
     <div class="shell">
       <div class="section-head">
         <span class="eyebrow">Get recovered</span>
@@ -1067,6 +1007,7 @@
                 <option>Low-clearance or underground recovery</option>
                 <option>Jump start / flat battery</option>
                 <option>Seized wheel or stuck brake</option>
+                <option>Trailer or catering unit transport</option>
                 <option>Accident or non-runner transport</option>
                 <option>Long-distance vehicle transport</option>
               </select>
@@ -1130,7 +1071,7 @@
       <div class="footer-col">
         <a href="index.html" class="brand mb-md" aria-label="Simpsons Breakdown Recovery — home">
           <span class="brand__plate">
-            <img class="brand__logo" src="images/Simpsons-Breakdown-New-Logo.png.webp" width="300" height="212" alt="Simpsons Breakdown Recovery Services Ltd logo">
+            <img class="brand__logo" src="images/logo.webp" width="661" height="143" alt="Simpsons Breakdown Recovery Services Ltd">
           </span>
         </a>
         <p class="muted small mb-md">
@@ -1152,7 +1093,7 @@
           <li><a href="#services">Van &amp; commercial towing</a></li>
           <li><a href="#services">Low-clearance extraction</a></li>
           <li><a href="#services">Jump starts &amp; flat batteries</a></li>
-          <li><a href="#services">Accident &amp; non-runner transport</a></li>
+          <li><a href="#services">Trailer &amp; catering unit transport</a></li>
         </ul>
       </div>
 
@@ -1164,7 +1105,7 @@
           <li><a href="areas/birmingham-city-centre-breakdown-recovery.html">Birmingham city centre</a></li>
           <li><a href="areas/smethwick-breakdown-recovery.html">Smethwick</a></li>
           <li><a href="areas/perry-barr-breakdown-recovery.html">Perry Barr</a></li>
-          <li><a href="#areas">All 12 areas &rarr;</a></li>
+          <li><a href="#areas">View all 12 areas &rarr;</a></li>
         </ul>
       </div>
 
@@ -1172,7 +1113,7 @@
         <h4>Emergency</h4>
         <p class="muted small mb-md">Open 24 hours a day, 7 days a week.</p>
         <a href="tel:07706057962" class="btn btn--red btn--block mb-sm">Call 07706 057962</a>
-        <a href="https://wa.me/447706057962" target="_blank" rel="noopener" class="btn btn--green btn--block mb-md">Send WhatsApp location</a>
+        <a href="https://wa.me/447706057962" target="_blank" rel="noopener" class="btn btn--green btn--block mb-md">Message on WhatsApp</a>
         <ul class="footer-links">
           <li><a href="https://share.google/FIO6KZSxKO3p8ohXX" target="_blank" rel="noopener">Google reviews</a></li>
           <li><a href="#" data-legal="Terms &amp; conditions">Terms &amp; conditions</a></li>
@@ -1202,6 +1143,12 @@
     WhatsApp pin
   </a>
 </div>
+
+<!-- FLOATING WHATSAPP -->
+<a class="fab" href="https://wa.me/447706057962?text=Hello%20Simpsons%20Recovery%2C%20I%27d%20like%20to%20enquire%20about%20a%20recovery." target="_blank" rel="noopener" aria-label="Chat with Simpsons Breakdown Recovery on WhatsApp">
+  <svg class="icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.03 6.17c-3.18 0-5.76 2.59-5.76 5.77 0 1.3.38 2.27 1.02 3.28l-.58 2.13 2.18-.57c.98.58 1.91.93 3.14.93 3.18 0 5.77-2.59 5.77-5.77 0-3.19-2.58-5.77-5.77-5.77zm3.39 8.24c-.14.4-.84.77-1.17.82-.3.05-.68.06-1.09-.07-.25-.08-.58-.19-.99-.36-1.74-.75-2.87-2.5-2.96-2.62-.09-.11-.71-.94-.71-1.79s.45-1.27.61-1.45c.16-.17.35-.22.46-.22h.33c.11 0 .25-.04.39.3.14.35.49 1.2.53 1.29.04.09.07.19.01.3-.06.12-.09.19-.17.29l-.26.3c-.09.09-.18.18-.08.36.1.17.45.74.96 1.2.66.59 1.22.77 1.4.86.17.09.27.07.37-.04.1-.12.43-.51.55-.68.12-.17.23-.14.39-.09.16.06 1.01.48 1.18.56.17.09.29.13.33.2.05.07.05.42-.1.83z"/></svg>
+  <span class="fab__label">Chat on WhatsApp</span>
+</a>
 
 <script src="js/main.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>

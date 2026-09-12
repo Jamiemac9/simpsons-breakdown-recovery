@@ -78,6 +78,25 @@ await send('Emulation.setTouchEmulationEnabled', { enabled: width < 900 });
 await send('Page.navigate', { url });
 await new Promise((r) => setTimeout(r, 1800));
 
+// The entry pop-up auto-opens shortly after load and would cover the whole
+// page in the capture. Dismiss it (and mark it seen so it cannot reopen)
+// unless the caller explicitly wants to photograph the modal itself.
+const keepModal = process.argv.includes('--keep-modal');
+if (!keepModal) {
+  await send('Runtime.evaluate', {
+    expression: `(() => {
+      try { sessionStorage.setItem('simpsons_modal_seen', '1'); } catch (e) {}
+      document.querySelectorAll('.modal').forEach(m => {
+        m.classList.remove('is-open');
+        m.setAttribute('aria-hidden', 'true');
+      });
+      return true;
+    })()`,
+    returnByValue: true,
+  });
+  await new Promise((r) => setTimeout(r, 400));
+}
+
 // Report honesty checks alongside the image.
 const probe = await send('Runtime.evaluate', {
   expression: `(() => {
@@ -113,12 +132,31 @@ const probe = await send('Runtime.evaluate', {
 
 console.log(probe.result.value);
 
+// Optional: scroll a specific section into view before capturing, so a tall
+// page can be reviewed section by section rather than squeezed into one image.
+const atArg = process.argv.find((a) => a.startsWith('--at='));
+if (atArg) {
+  const selector = atArg.slice('--at='.length);
+  await send('Runtime.evaluate', {
+    expression: `(() => {
+      const el = document.querySelector(${JSON.stringify(selector)});
+      if (!el) return 'not found: ' + ${JSON.stringify(selector)};
+      const y = el.getBoundingClientRect().top + window.scrollY - 90;
+      window.scrollTo({ top: y, behavior: 'instant' });
+      return 'scrolled to ' + ${JSON.stringify(selector)};
+    })()`,
+    returnByValue: true,
+  });
+  await new Promise((r) => setTimeout(r, 500));
+}
+
+// A clip is document-relative, so it must be omitted when we have scrolled to
+// a section — otherwise the capture lands on an unrelated part of the page.
 const shot = await send('Page.captureScreenshot', {
   format: 'png',
   captureBeyondViewport: fullPage,
-  ...(fullPage ? {} : { clip: { x: 0, y: 0, width, height, scale: 1 } }),
+  ...(fullPage || atArg ? {} : { clip: { x: 0, y: 0, width, height, scale: 1 } }),
 });
-
 await fs.writeFile(out, Buffer.from(shot.data, 'base64'));
 console.log('wrote ' + out);
 ws.close();

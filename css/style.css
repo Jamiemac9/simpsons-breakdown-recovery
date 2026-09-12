@@ -333,9 +333,9 @@ p { max-width: 68ch; }
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
-.brand__logo { height: 56px; width: auto; }
+.brand__logo { height: 40px; width: auto; }
 
-@media (max-width: 640px) { .brand__logo { height: 46px; } }
+@media (max-width: 640px) { .brand__logo { height: 32px; } }
 
 .brand__text { display: flex; flex-direction: column; line-height: 1; }
 .brand__name {
@@ -439,32 +439,47 @@ p { max-width: 68ch; }
 .mobile-nav__cta { padding: 16px var(--gutter) 4px; display: flex; flex-direction: column; gap: 10px; }
 
 /* ---------- Hero ---------- */
+/* Full-bleed ambient photo behind the content, blurred down to a colour field
+   so the headline and CTAs stay the focus. The photo itself is decorative. */
 .hero {
   position: relative;
   overflow: hidden;
-  padding: clamp(42px, 6vw, 76px) 0 clamp(48px, 7vw, 84px);
+  padding: clamp(56px, 7.5vw, 104px) 0 clamp(60px, 8vw, 110px);
+  background: var(--bg-primary);
+  isolation: isolate;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: -60px;
+  z-index: -2;
+  background-size: cover;
+  background-position: center 42%;
+  background-repeat: no-repeat;
+  /* Enough blur to stay clearly decorative, but light enough that the scene is
+     still readable behind the copy rather than becoming a muddy grey field. */
+  filter: blur(9px) saturate(1.05);
+  transform: scale(1.05);
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background:
-    radial-gradient(900px 460px at 18% -12%, rgba(19, 99, 223, 0.3), transparent 62%),
-    radial-gradient(720px 420px at 88% 6%, rgba(239, 68, 68, 0.14), transparent 60%),
-    linear-gradient(180deg, #070e18 0%, #0a1728 100%);
+    linear-gradient(180deg, rgba(7, 14, 24, 0.72) 0%, rgba(7, 14, 24, 0.58) 45%, rgba(7, 14, 24, 0.92) 100%),
+    radial-gradient(900px 520px at 12% -10%, rgba(19, 99, 223, 0.42), transparent 64%),
+    radial-gradient(700px 420px at 92% 8%, rgba(239, 68, 68, 0.18), transparent 62%);
 }
 
-.hero__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(24px, 3.5vw, 46px);
-  align-items: center;
-}
-
-/* Two columns from tablet up so the hero does not become a tall text wall. */
-@media (min-width: 768px) {
-  .hero__grid {
-    grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
-  }
+.hero__inner {
+  position: relative;
+  max-width: 780px;
 }
 
 .hero h1 { margin-bottom: 16px; }
 .hero__accent {
+  display: block;
   background: linear-gradient(135deg, var(--red-soft) 0%, var(--red-deep) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -477,7 +492,7 @@ p { max-width: 68ch; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(19, 99, 223, 0.14);
+  background: rgba(19, 99, 223, 0.16);
   border: 1px solid var(--line-blue);
   border-radius: var(--r-full);
   padding: 6px 14px;
@@ -645,14 +660,141 @@ p { max-width: 68ch; }
 .media__caption h3 { font-size: 1.1rem; margin-bottom: 6px; }
 .media__caption p { font-size: 0.86rem; color: var(--text-muted); }
 
-/* Hero feature photo */
-.hero-photo {
+/* ---------- Floating WhatsApp action ---------- */
+.fab {
+  position: fixed;
+  right: 20px;
+  bottom: 22px;
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border-radius: var(--r-full);
+  background: var(--green);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 800;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 0 rgba(18, 140, 126, 0.55);
+  animation: fab-pulse 2.8s infinite;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.fab:hover { background: var(--green-hover); transform: translateY(-2px); }
+.fab__label { white-space: nowrap; }
+
+@keyframes fab-pulse {
+  0%   { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 0 rgba(18, 140, 126, 0.55); }
+  70%  { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 16px rgba(18, 140, 126, 0); }
+  100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 0 0 rgba(18, 140, 126, 0); }
+}
+
+/* Below the dock breakpoint the FAB shrinks to a circle and lifts clear of the
+   fixed action bar so the two WhatsApp entry points do not stack up. */
+@media (max-width: 899px) {
+  .fab {
+    right: 14px;
+    bottom: calc(84px + env(safe-area-inset-bottom));
+    padding: 0;
+    width: 54px;
+    height: 54px;
+    justify-content: center;
+    gap: 0;
+  }
+  .fab__label { display: none; }
+  .fab .icon { width: 26px; height: 26px; }
+}
+
+/* ---------- Our work: photo + job cards ---------- */
+.work-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
   border-radius: var(--r-lg);
   overflow: hidden;
-  border: 1px solid var(--line-strong);
-  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
-.hero-photo img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+.work-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--line-blue);
+  box-shadow: var(--shadow-lg), var(--glow-blue);
+}
+.work-card__media {
+  position: relative;
+  background: #080f1a;
+  overflow: hidden;
+}
+.work-card__media img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.work-card:hover .work-card__media img { transform: scale(1.05); }
+.work-card__badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(4, 8, 15, 0.9);
+  border: 1px solid var(--line-strong);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: var(--r-full);
+}
+.work-card__body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.work-card__body h3 { font-size: 1.15rem; }
+.work-card__body p { font-size: 0.87rem; color: var(--text-muted); margin: 0; }
+.work-card__meta {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--cyan);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+/* ---------- Route list (area pages) ---------- */
+.route-list { display: flex; flex-direction: column; gap: 14px; }
+.route-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 16px;
+  border-left: 2px solid rgba(19, 99, 223, 0.45);
+}
+.route-list strong { font-size: 0.95rem; }
+
+/* ---------- Compact area tiles ---------- */
+.area-tile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 15px 17px;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+.area-tile:hover {
+  border-color: var(--line-blue);
+  background: var(--bg-elevated);
+  transform: translateY(-2px);
+}
+.area-tile__name { font-family: var(--font-display); font-size: 1.16rem; color: #fff; text-transform: uppercase; }
+.area-tile__meta { font-size: 0.74rem; color: var(--text-dim); margin-top: 2px; }
+.area-tile__arrow { color: var(--cyan); font-weight: 800; flex-shrink: 0; }
+
+.area-tile--base { border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.07); }
+.area-tile--base .area-tile__meta { color: var(--red-soft); }
 
 /* ---------- Area cards ---------- */
 .area-card {
