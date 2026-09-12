@@ -62,6 +62,13 @@
   /* Layout */
   --shell: 1260px;
   --gutter: 22px;
+  /* Desktop offset for the floating WhatsApp button. It has to clear the
+     "Powered by Netlify" badge, which the free tier injects into the
+     bottom-right corner at a higher z-index than anything we can set — left at
+     the usual 22px the badge covers the button and swallows the tap, sending
+     people to netlify.com instead of WhatsApp.
+     ON THE PRODUCTION DOMAIN (badge gone) this can drop back to 22px. */
+  --fab-bottom: 88px;
   --header-h: 74px;
 }
 
@@ -666,7 +673,7 @@ p { max-width: 68ch; }
 .fab {
   position: fixed;
   right: 20px;
-  bottom: 22px;
+  bottom: var(--fab-bottom);
   z-index: 900;
   display: inline-flex;
   align-items: center;

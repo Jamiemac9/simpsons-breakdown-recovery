@@ -171,6 +171,31 @@ const script = `(() => {
     ok('fab is fixed positioned', cs.position === 'fixed');
     const r = fab.getBoundingClientRect();
     ok('fab is on screen', r.width > 0 && r.height > 0 && r.right <= innerWidth + 1);
+
+    // Something must not be sitting on top of it. The Netlify free tier
+    // injects a "Powered by Netlify" badge into the same corner at a higher
+    // z-index than we can set, which silently ate the tap and sent people to
+    // netlify.com instead of WhatsApp. sample the middle of every edge and
+    // the centre: elementFromPoint must land on the button every time.
+    const probe = (x, y) => {
+      const el = document.elementFromPoint(x, y);
+      return !!el && (el === fab || fab.contains(el));
+    };
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const hits = [
+      ['centre', probe(cx, cy)],
+      ['top', probe(cx, r.top + 3)],
+      ['bottom', probe(cx, r.bottom - 3)],
+      ['left', probe(r.left + 3, cy)],
+      ['right', probe(r.right - 3, cy)],
+    ];
+    const covered = hits.filter(([, h]) => !h).map(([n]) => n);
+    ok('fab not covered by another element', covered.length === 0, covered.length ? 'covered at: ' + covered.join(', ') : 'all 5 points reachable');
+
+    // 44px is the minimum reliable touch target.
+    ok('fab meets 44px tap target', r.width >= 44 && r.height >= 44,
+       Math.round(r.width) + 'x' + Math.round(r.height));
   }
 
   // --- header WhatsApp removed, phone retained ---------------------------
