@@ -1,0 +1,20 @@
+# Simpsons Breakdown Recovery Services Ltd
+# https://www.simpsonsbreakdownrecovery.co.uk
+#
+# The site is intentionally crawlable. The Netlify demo copy is kept out of the
+# index with an X-Robots-Tag response header (see netlify.toml), not with a
+# robots.txt rule — a robots.txt disallow only stops crawling, it does not stop
+# a URL being indexed if it is linked from elsewhere.
+
+User-agent: *
+Allow: /
+Disallow: /404.html
+
+# Nothing here needs throttling, but the aggressive scrapers get blocked.
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+Sitemap: https://www.simpsonsbreakdownrecovery.co.uk/sitemap.xml

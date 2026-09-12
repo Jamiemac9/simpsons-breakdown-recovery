@@ -1,9 +1,26 @@
-# Static multi-page site: every route is a real file on disk.
+# ============================================================================
+#  Netlify configuration
+# ============================================================================
 #
-# There is deliberately NO catch-all redirect to index.html. A `/*` -> 200
-# rewrite turns every mistyped or removed URL into the homepage served with a
-# 200, which search engines treat as a soft 404. Netlify serves the branded
-# 404.html below for anything genuinely missing.
+#  This site is a static multi-page build: every route is a real file on disk.
+#  There is deliberately NO catch-all redirect to index.html — a /* -> 200
+#  rewrite turns every mistyped or removed URL into the homepage served with a
+#  200, which search engines treat as a soft 404. Netlify serves 404.html for
+#  anything genuinely missing.
+#
+# ----------------------------------------------------------------------------
+#  IMPORTANT — BEFORE THIS GOES ON THE CUSTOMER'S REAL DOMAIN
+# ----------------------------------------------------------------------------
+#  The X-Robots-Tag block at the bottom of this file keeps the Netlify DEMO out
+#  of Google. The demo must never be indexed, or it competes with the real site.
+#
+#  The pages themselves are marked "index, follow" and their canonical URLs all
+#  point at the production domain, so the HTML is already Google-ready.
+#
+#  When you move to Cloudflare Pages / the customer's domain:
+#      DELETE the "DEMO ONLY" header block below.
+#  If you leave it in place, the live site will be invisible to Google.
+# ----------------------------------------------------------------------------
 
 [build]
   publish = "."
@@ -14,8 +31,10 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(self), camera=(), microphone=()"
 
-# Immutable assets: content is versioned by filename via the build scripts.
+# Static assets are safe to cache hard. Filenames are stable, and a content
+# change is a rebuild plus the cache-busting query in the referencing markup.
 [[headers]]
   for = "/images/*"
   [headers.values]
@@ -30,3 +49,27 @@
   for = "/js/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
+
+# HTML should revalidate so content edits go live immediately.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Content-Type = "application/xml; charset=utf-8"
+    Cache-Control = "public, max-age=3600"
+
+# ============================================================================
+#  DEMO ONLY — remove this block when deploying to the customer's domain.
+#  It stops the Netlify preview competing with the real site in search.
+# ============================================================================
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+# ============================================================================
+#  END DEMO ONLY
+# ============================================================================

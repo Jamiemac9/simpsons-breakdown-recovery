@@ -21,6 +21,11 @@ const height = parseInt(heightArg || '844', 10);
 const fullPage = fullArg === 'full';
 const PORT = process.env.CDP_PORT || '9333';
 
+// --dpr=2 renders at retina density, which is how the hero background was
+// found to be pixelated: it was fine at 1x and visibly soft on a real Mac.
+const dprArg = process.argv.find((a) => a.startsWith('--dpr='));
+const dpr = dprArg ? parseFloat(dprArg.slice('--dpr='.length)) : 1;
+
 const fs = await import('node:fs/promises');
 
 async function getTarget() {
@@ -70,7 +75,7 @@ await send('Page.enable');
 await send('Emulation.setDeviceMetricsOverride', {
   width,
   height,
-  deviceScaleFactor: 1,
+  deviceScaleFactor: dpr,
   mobile: width < 900,
 });
 await send('Emulation.setTouchEmulationEnabled', { enabled: width < 900 });

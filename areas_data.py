@@ -119,6 +119,9 @@ AREAS = [
     {
         "slug": "birmingham-city-centre-breakdown-recovery",
         "name": "Birmingham city centre",
+        # Shorter form for the <title> tag, so the SERP title stays under the
+        # ~60 character truncation point.
+        "title_name": "City Centre Birmingham",
         "postcodes": "B1, B2, B3, B4 and B5",
         "distance": "1.5 miles from the depot",
         "eta": "20–35 minutes",

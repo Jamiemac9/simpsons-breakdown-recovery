@@ -15,36 +15,39 @@ import json
 import os
 import pathlib
 
+import site_config as cfg
+import seo
 from areas_data import AREAS, AREA_BY_SLUG
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 OUT_DIR = BASE_DIR / "areas"
 
-# Photography reused from the homepage "Our Work" section. Each entry is
-# (filename, width, height, alt text, badge, caption).
+WHATSAPP = cfg.WHATSAPP_NUMBER
+PHONE = cfg.PHONE_DISPLAY
+PHONE_TEL = cfg.PHONE_TEL
 WORK_TEASERS = [
     (
-        "simpsons-white-van-recovery.jpg", 1100, 1100,
+        "work-van-recovery.webp", 1100, 1100,
         "Simpsons Breakdown Recovery flatbed loading a white Renault Trafic work van in Birmingham",
         "Van recovery",
         "Work vans and panel vans winched onto the flatbed and taken to your garage.",
     ),
     (
-        "BR-Pic-2.jpg.webp", 960, 720,
+        "work-cat-service-truck.webp", 960, 720,
         "Plant service truck with a mounted crane loaded on a Simpsons flatbed recovery truck",
         "Commercial",
         "Heavy and awkward commercial loads, recovered from dealer yards and sites.",
     ),
     (
-        "Simpsons-food-truck-nottybites-revocery.jpg", 1100, 1100,
+        "work-trailer-load.webp", 1100, 1100,
         "Catering trailer loaded on a Simpsons Breakdown Recovery flatbed at a showground",
         "Trailers",
         "Catering units, box trailers and event transport, booked in advance.",
     ),
 ]
 
-WHATSAPP = "447706057962"
-PHONE = "07706 057962"
+# Photography reused from the homepage "Our Work" section. Each entry is
+# (filename, width, height, alt text, badge, caption).
 
 
 def wa(message: str) -> str:
@@ -89,81 +92,51 @@ def build_faqs(area: dict) -> list:
     return standing + list(area["faqs"])
 
 
+def page_title(area: dict) -> str:
+    """SERP title, kept under Google's ~60 character truncation point.
+
+    Longer area names ("City Centre Birmingham") would push the title past the
+    limit, so those fall back to a shorter brand suffix rather than being
+    truncated mid-word in the results page.
+    """
+    name = area.get("title_name", area["name"])
+    full = f"Breakdown Recovery {name} | 24/7 Simpsons Recovery"
+    if len(full) <= 60:
+        return full
+    return f"Breakdown Recovery {name} | 24/7 Simpsons"
+
+
+def page_description(area: dict) -> str:
+    """Meta description, kept under 160 characters so it is not cut off."""
+    return (
+        f"24/7 breakdown recovery in {area['name']}. Typical arrival {area['eta']}, "
+        f"fixed prices and 229 five-star reviews. Call Simpsons on {PHONE}."
+    )
+
+
 def build_jsonld(area: dict, faqs: list) -> str:
-    url = f"https://www.simpsonsbreakdownrecovery.co.uk/areas/{area['slug']}.html"
-    return json.dumps(
-        {
-            "@context": "https://schema.org",
-            "@graph": [
-                {
-                    "@type": ["AutoRepair", "EmergencyService"],
-                    "@id": url,
-                    "name": f"Simpsons Breakdown Recovery Services Ltd — {area['name']}",
-                    "url": url,
-                    "telephone": "+" + WHATSAPP,
-                    "priceRange": "££",
-                    "image": "https://www.simpsonsbreakdownrecovery.co.uk/images/simpsons-white-van-recovery.jpg",
-                    "logo": "https://www.simpsonsbreakdownrecovery.co.uk/images/logo.webp",
-                    "parentOrganization": {
-                        "@type": "Organization",
-                        "name": "Simpsons Breakdown Recovery Services Ltd",
-                    },
-                    "address": {
-                        "@type": "PostalAddress",
-                        "streetAddress": "289 Icknield Port Road, At the rear",
-                        "addressLocality": "Edgbaston, Birmingham",
-                        "addressRegion": "West Midlands",
-                        "postalCode": "B16 0AG",
-                        "addressCountry": "GB",
-                    },
-                    "areaServed": {"@type": "AdministrativeArea", "name": area["name"]},
-                    "openingHoursSpecification": [{
-                        "@type": "OpeningHoursSpecification",
-                        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                        "opens": "00:00",
-                        "closes": "23:59",
-                    }],
-                    "aggregateRating": {
-                        "@type": "AggregateRating",
-                        "ratingValue": "4.9",
-                        "reviewCount": "229",
-                        "bestRating": "5",
-                        "worstRating": "1",
-                    },
-                },
-                {
-                    "@type": "BreadcrumbList",
-                    "@id": url + "#breadcrumb",
-                    "itemListElement": [
-                        {"@type": "ListItem", "position": 1, "name": "Home",
-                         "item": "https://www.simpsonsbreakdownrecovery.co.uk/"},
-                        {"@type": "ListItem", "position": 2, "name": "Areas Covered",
-                         "item": "https://www.simpsonsbreakdownrecovery.co.uk/#areas"},
-                        {"@type": "ListItem", "position": 3,
-                         "name": f"{area['name']} breakdown recovery"},
-                    ],
-                },
-                {
-                    "@type": "FAQPage",
-                    "@id": url + "#faq",
-                    "mainEntity": [
-                        {
-                            "@type": "Question",
-                            "name": q,
-                            "acceptedAnswer": {"@type": "Answer", "text": a},
-                        }
-                        for q, a in faqs
-                    ],
-                },
-            ],
-        },
-        indent=2,
-        ensure_ascii=False,
+    """Structured data for a location page, assembled from the shared builders."""
+    url = f"{cfg.SITE_URL}/areas/{area['slug']}.html"
+    title = page_title(area)
+    description = page_description(area)
+    return seo.graph(
+        seo.business_node(page_url=url, name_suffix=area["name"], area_name=area["name"]),
+        seo.website_node(),
+        seo.web_page_node(url=url, title=title, description=description),
+        seo.breadcrumb_node(url=url, items=[
+            ("Home", f"{cfg.SITE_URL}/"),
+            ("Areas Covered", f"{cfg.SITE_URL}/#areas"),
+            (f"{area['name']} breakdown recovery", None),
+        ]),
+        seo.faq_node(url=url, faqs=faqs),
     )
 
 
 def build_page(area: dict) -> str:
     faqs = build_faqs(area)
+    page_url = f"{cfg.SITE_URL}/areas/{area['slug']}.html"
+    page_head_title = page_title(area)
+    page_desc = page_description(area)
     wa_area = wa(
         f"Hello Simpsons Recovery, I have broken down in {area['name']}. "
         f"Here is my location:"
@@ -231,21 +204,13 @@ def build_page(area: dict) -> str:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Breakdown Recovery {e(area['name'])} | 24/7 Car &amp; Van Towing | Simpsons Recovery</title>
-  <meta name="description" content="24/7 breakdown recovery in {e(area['name'])} ({e(area['postcodes'])}). Typical arrival {e(area['eta'])}. Cars, vans and motorbikes recovered {e(area['distance'])}. Call a local operator on {PHONE}.">
-  <meta name="robots" content="index, follow">
+  <title>{e(page_head_title)}</title>
+  <meta name="description" content="{e(page_desc)}">
 
-  <meta name="geo.region" content="GB-BIR">
-  <meta name="geo.placename" content="{e(area['name'])}, Birmingham">
+{seo.head_meta(url=page_url, title=page_head_title, description=page_desc,
+               geo_placename=f"{e(area['name'])}, Birmingham")}
 
-  <meta property="og:title" content="Breakdown Recovery {e(area['name'])} | Simpsons Breakdown Recovery Services Ltd">
-  <meta property="og:description" content="24/7 breakdown recovery in {e(area['name'])} ({e(area['postcodes'])}). Typical arrival {e(area['eta'])}. Call {PHONE}.">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="en_GB">
-  <meta property="og:image" content="../images/og-image.jpg">
-
-  <link rel="icon" href="../images/icon-32.png" sizes="32x32">
-  <link rel="apple-touch-icon" href="../images/icon-180.png">
+{seo.favicon_links('../')}
   <link rel="preload" as="image" href="../images/logo.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -266,7 +231,7 @@ def build_page(area: dict) -> str:
       <span class="ticker__live"><span class="dot"></span> {e(area['name'])} recovery on call</span>
       <span class="ticker__detail">{e(area['postcodes'])} &bull; typical arrival {e(area['eta'])}</span>
     </div>
-    <a class="ticker__call" href="tel:{PHONE.replace(' ', '')}">{PHONE}</a>
+    <span class="ticker__note">Open 24 hours, 7 days a week</span>
   </div>
 </div>
 
@@ -275,7 +240,7 @@ def build_page(area: dict) -> str:
 
     <a href="../index.html" class="brand" aria-label="Simpsons Breakdown Recovery Services Ltd — home">
       <span class="brand__plate">
-        <img class="brand__logo" src="../images/logo.webp" width="661" height="143" alt="Simpsons Breakdown Recovery Services Ltd">
+        <img class="brand__logo" src="../images/logo.webp" width="661" height="143" alt="Simpsons Breakdown Recovery Services Ltd" fetchpriority="high" decoding="async">
       </span>
     </a>
 
@@ -323,7 +288,7 @@ def build_page(area: dict) -> str:
   </nav>
 
   <section class="hero">
-    <div class="hero__bg" style="background-image:url('../images/Simpsons-recovery-on-roadside.jpg')" aria-hidden="true"></div>
+    <div class="hero__bg" aria-hidden="true"></div>
     <div class="hero__scrim" aria-hidden="true"></div>
 
     <div class="shell hero__inner">
@@ -680,7 +645,7 @@ def build_page(area: dict) -> str:
       <div class="footer-col">
         <a href="../index.html" class="brand mb-md" aria-label="Simpsons Breakdown Recovery — home">
           <span class="brand__plate">
-            <img class="brand__logo" src="../images/logo.webp" width="661" height="143" alt="Simpsons Breakdown Recovery Services Ltd">
+            <img class="brand__logo" src="../images/logo.webp" width="661" height="143" alt="Simpsons Breakdown Recovery Services Ltd" loading="lazy" decoding="async">
           </span>
         </a>
         <p class="muted small mb-md">

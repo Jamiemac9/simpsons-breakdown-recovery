@@ -268,13 +268,11 @@ p { max-width: 68ch; }
 .ticker__detail { color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 @media (max-width: 860px) { .ticker__detail { display: none; } }
+@media (max-width: 560px) { .ticker__note { display: none; } }
 
-.ticker__call {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 800;
-  color: var(--red-soft);
+.ticker__note {
+  font-weight: 700;
+  color: var(--cyan);
   white-space: nowrap;
 }
 
@@ -451,15 +449,19 @@ p { max-width: 68ch; }
 
 .hero__bg {
   position: absolute;
-  inset: -60px;
+  inset: 0;
   z-index: -2;
   background-size: cover;
   background-position: center 42%;
   background-repeat: no-repeat;
-  /* Enough blur to stay clearly decorative, but light enough that the scene is
-     still readable behind the copy rather than becoming a muddy grey field. */
-  filter: blur(9px) saturate(1.05);
-  transform: scale(1.05);
+  /* The blur is baked into the file by build_hero.py, so the browser is not
+     stretching a small source and then blurring it — which is what made this
+     looked pixelated. Only a hair of extra softness is applied here. */
+  background-image: url('../images/hero-bg-sm.jpg');
+}
+
+@media (min-width: 900px) {
+  .hero__bg { background-image: url('../images/hero-bg.jpg'); }
 }
 
 .hero__scrim {
