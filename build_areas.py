@@ -1,17 +1,179 @@
-<!DOCTYPE html>
+#!/usr/bin/env python3
+"""Generate the Simpsons Breakdown Recovery location pages.
+
+Single source of truth for the area-page template so every page shares the
+same header, footer, dock and design-system classes as index.html.
+"""
+import os
+import json
+import html
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+OUT_DIR = os.path.join(BASE_DIR, "areas")
+
+AREAS = [
+    {
+        "slug": "edgbaston-breakdown-recovery",
+        "name": "Edgbaston",
+        "postcodes": "B15, B16 and B17",
+        "distance": "Depot base",
+        "eta": "15–25 minutes",
+        "roads": "A456 Hagley Road, Icknield Port Road, A4540 Middleway and Chad Road",
+        "intro": "Our depot sits on Icknield Port Road, so Edgbaston is the one place we never have to cross the city to reach. When something goes wrong between Five Ways and the Botanical Gardens, we are usually the closest recovery truck to you.",
+        "landmarks": "Edgbaston Village, Five Ways Island, Hagley Road, Birmingham Botanical Gardens, Edgbaston Reservoir, the Priory and the Calthorpe Estate",
+        "scenarios": "Dead batteries outside Hagley Road apartment blocks, cars that will not restart in the multi-storey car parks around Five Ways, and vehicles that need moving off the A456 at short notice.",
+        "nearby": ["harborne-breakdown-recovery", "birmingham-city-centre-breakdown-recovery", "smethwick-breakdown-recovery"],
+    },
+    {
+        "slug": "harborne-breakdown-recovery",
+        "name": "Harborne",
+        "postcodes": "B17",
+        "distance": "1.8 miles from the depot",
+        "eta": "20–30 minutes",
+        "roads": "Harborne High Street, Court Oak Road, Lordswood Road and Metchley Lane",
+        "intro": "Harborne is one of our quickest jobs. The High Street is narrow, busy and almost permanently lined with parked cars, and we know exactly where we can safely stop a flatbed without blocking the traffic behind us.",
+        "landmarks": "Harborne High Street, the Queen Elizabeth Hospital, University of Birmingham, Metchley Park, Harborne Pool and Fitness Centre and Court Oak Road",
+        "scenarios": "Staff cars that will not start after a night shift at the QE, flat tyres on the High Street, and vehicles with seized brakes that cannot be moved without skates.",
+        "nearby": ["edgbaston-breakdown-recovery", "birmingham-city-centre-breakdown-recovery", "halesowen-breakdown-recovery", "smethwick-breakdown-recovery"],
+    },
+    {
+        "slug": "birmingham-city-centre-breakdown-recovery",
+        "name": "Birmingham city centre",
+        "postcodes": "B1, B2, B3, B4 and B5",
+        "distance": "1.5 miles from the depot",
+        "eta": "20–35 minutes",
+        "roads": "the A38(M) Aston Expressway, the Queensway tunnels, Broad Street and Suffolk Street Queensway",
+        "intro": "The city centre is where most recovery firms give up. Low ceilings, tight ramps and cars that cannot be pushed make multi-storey car parks genuinely difficult, so we carry the equipment to get vehicles out without damage.",
+        "landmarks": "Bullring, Grand Central, the Mailbox, Broad Street, Paradise, the Jewellery Quarter and the Utilita Arena",
+        "scenarios": "Non-runners stuck on the third level of a multi-storey with a 1.9 m height barrier, cars immobilised in basement bays beneath apartment blocks, and late-night breakdowns around Broad Street and the Arcadian.",
+        "nearby": ["edgbaston-breakdown-recovery", "harborne-breakdown-recovery", "perry-barr-breakdown-recovery", "erdington-breakdown-recovery"],
+    },
+    {
+        "slug": "smethwick-breakdown-recovery",
+        "name": "Smethwick",
+        "postcodes": "B66 and B67",
+        "distance": "2.2 miles from the depot",
+        "eta": "20–30 minutes",
+        "roads": "the A457 Tollhouse Way, Cape Hill, Soho Way and the A41",
+        "intro": "Smethwick's mix of busy industrial frontages and tight residential terraces means access planning matters. We cover the whole of Smethwick, including Bearwood and the Cape Hill commercial corridor.",
+        "landmarks": "Cape Hill, Bearwood, Galton Bridge, Smethwick Rolfe Street, the A457 Tollhouse Way and Soho Way industrial estates",
+        "scenarios": "Trades vans that have failed part-loaded on Cape Hill, delivery vehicles stuck at an industrial unit, and cars that will not start on residential terraces where parking is limited.",
+        "nearby": ["edgbaston-breakdown-recovery", "west-bromwich-breakdown-recovery", "harborne-breakdown-recovery", "birmingham-city-centre-breakdown-recovery"],
+    },
+    {
+        "slug": "west-bromwich-breakdown-recovery",
+        "name": "West Bromwich",
+        "postcodes": "B70 and B71",
+        "distance": "4.5 miles from the depot",
+        "eta": "25–35 minutes",
+        "roads": "the A41 Expressway, M5 junction 1, High Street and All Saints Way",
+        "intro": "West Bromwich sits right on the M5, which means a good proportion of our jobs here start on a slip road or a roundabout rather than a driveway. We cover the town centre, New Square and Sandwell Valley.",
+        "landmarks": "New Square shopping centre, Sandwell Valley, the Hawthorns, All Saints Way and the A41 Expressway",
+        "scenarios": "Breakdowns on the M5 junction 1 slip roads, commercial vans that have failed outside a depot, and cars recovered from shopping centre car parks.",
+        "nearby": ["smethwick-breakdown-recovery", "dudley-breakdown-recovery", "walsall-breakdown-recovery", "perry-barr-breakdown-recovery"],
+    },
+    {
+        "slug": "perry-barr-breakdown-recovery",
+        "name": "Perry Barr",
+        "postcodes": "B42",
+        "distance": "3.6 miles from the depot",
+        "eta": "25–35 minutes",
+        "roads": "the A34 Walsall Road, Birchfield Road, Aldridge Road and Aston Lane",
+        "intro": "The A34 through Perry Barr is one of the busiest dual carriageways in North Birmingham, and a broken-down vehicle there backs traffic up fast. We treat Perry Barr and the Birchfield corridor as priority.",
+        "landmarks": "Alexander Stadium, One Stop Shopping Centre, Perry Barr railway station, Birchfield Road and the A34 Walsall Road",
+        "scenarios": "Commuter breakdowns on the A34 during peak hours, flat tyres and engine faults near the One Stop centre, and event traffic incidents around Alexander Stadium.",
+        "nearby": ["birmingham-city-centre-breakdown-recovery", "erdington-breakdown-recovery", "walsall-breakdown-recovery", "west-bromwich-breakdown-recovery"],
+    },
+    {
+        "slug": "erdington-breakdown-recovery",
+        "name": "Erdington",
+        "postcodes": "B23 and B24",
+        "distance": "5.2 miles from the depot",
+        "eta": "25–40 minutes",
+        "roads": "the A38 Tyburn Road, Erdington High Street, Kingsbury Road and Gravelly Hill",
+        "intro": "Erdington's Tyburn Road corridor is packed with industrial units and commercial traffic, and it feeds directly into Spaghetti Junction. A van or lorry down here blocks a lot of people, so we get to it quickly.",
+        "landmarks": "Erdington High Street, Tyburn Road industrial estates, Fort Dunlop, Gravelly Hill and the M6 junction 6 approaches",
+        "scenarios": "Loaded commercial vehicles failing on Tyburn Road, cars breaking down on the approach to Spaghetti Junction, and battery failures on residential streets.",
+        "nearby": ["perry-barr-breakdown-recovery", "birmingham-city-centre-breakdown-recovery", "sutton-coldfield-breakdown-recovery", "walsall-breakdown-recovery"],
+    },
+    {
+        "slug": "halesowen-breakdown-recovery",
+        "name": "Halesowen",
+        "postcodes": "B62 and B63",
+        "distance": "6.4 miles from the depot",
+        "eta": "25–35 minutes",
+        "roads": "the A456 Manor Way, M5 junction 3 and the Halesowen bypass",
+        "intro": "Halesowen backs onto the M5 at junction 3, so we cover both town-centre jobs and motorway callouts from the same base. The hilly approach roads also mean we see more than our share of clutch and brake problems.",
+        "landmarks": "Halesowen town centre, Manor Way, the Cornbow Centre, M5 junction 3 and the surrounding lanes towards Romsley and Clent",
+        "scenarios": "Clutch and brake failures on the steeper roads around Halesowen, breakdowns on Manor Way and motorway recoveries from M5 junction 3.",
+        "nearby": ["dudley-breakdown-recovery", "harborne-breakdown-recovery", "west-bromwich-breakdown-recovery", "edgbaston-breakdown-recovery"],
+    },
+    {
+        "slug": "dudley-breakdown-recovery",
+        "name": "Dudley",
+        "postcodes": "DY1, DY2 and DY3",
+        "distance": "7.8 miles from the depot",
+        "eta": "30–40 minutes",
+        "roads": "the A4123 Birmingham New Road, Castlegate Way and Duncan Edwards Way",
+        "intro": "Dudley is a regular run for us, mostly along the A4123 and around Castlegate. We cover the town centre, Gornal, Sedgley and the corridor towards Brierley Hill.",
+        "landmarks": "Dudley town centre, Castlegate, the Zoological Gardens, Dudley Port, Gornal and the A4123 Birmingham New Road",
+        "scenarios": "RTC recovery on the Birmingham New Road, vehicles immobilised in the town centre car parks, and home-start battery jobs across the DY postcodes.",
+        "nearby": ["halesowen-breakdown-recovery", "west-bromwich-breakdown-recovery", "walsall-breakdown-recovery", "smethwick-breakdown-recovery"],
+    },
+    {
+        "slug": "sutton-coldfield-breakdown-recovery",
+        "name": "Sutton Coldfield",
+        "postcodes": "B72, B73, B74 and B75",
+        "distance": "8.2 miles from the depot",
+        "eta": "30–45 minutes",
+        "roads": "the A5127 Lichfield Road, the A453, the Sutton bypass and The Parade",
+        "intro": "Sutton Coldfield's wide residential streets and leafy driveways are straightforward for a flatbed — the tricky part is usually squeezing past parked cars on the older roads in Boldmere and Wylde Green, which is second nature to us.",
+        "landmarks": "Sutton Park, The Parade, Four Oaks, Boldmere, Wylde Green, Mere Green and the A5127 Lichfield Road",
+        "scenarios": "Cars that have not turned a wheel for months on a driveway, breakdowns on the Sutton bypass and motorcycles recovered to specialist workshops.",
+        "nearby": ["erdington-breakdown-recovery", "perry-barr-breakdown-recovery", "walsall-breakdown-recovery", "birmingham-city-centre-breakdown-recovery"],
+    },
+    {
+        "slug": "solihull-breakdown-recovery",
+        "name": "Solihull",
+        "postcodes": "B90, B91, B92 and B93",
+        "distance": "8.5 miles from the depot",
+        "eta": "30–45 minutes",
+        "roads": "the A41 Solihull bypass, M42 junction 5, Warwick Road and Lode Lane",
+        "intro": "Solihull sees a higher proportion of prestige cars, hybrids and electric vehicles, and those need care. We recover EVs on flatbeds with the drive wheels stationary, and we treat bodywork and wheels as if they were our own.",
+        "landmarks": "Touchwood, Solihull town centre, Shirley, Dorridge, Knowle, Lode Lane and the Land Rover site",
+        "scenarios": "Electric and hybrid vehicles that cannot be driven, breakdowns on the A41 bypass, and motorway callouts from M42 junction 5.",
+        "nearby": ["halesowen-breakdown-recovery", "harborne-breakdown-recovery", "birmingham-city-centre-breakdown-recovery", "dudley-breakdown-recovery"],
+    },
+    {
+        "slug": "walsall-breakdown-recovery",
+        "name": "Walsall",
+        "postcodes": "WS1, WS2 and WS3",
+        "distance": "9.5 miles from the depot",
+        "eta": "30–45 minutes",
+        "roads": "the A34, M6 junctions 9 and 10, Pleck Road and the Broadway",
+        "intro": "Walsall sits between two of the busiest motorway junctions in the region. Junction 9 and 10 of the M6 keep us busy, and we cover the town centre, Pleck and Bescot alongside them.",
+        "landmarks": "Walsall town centre, the Saddlers Centre, Pleck, Bescot Stadium, Bescot retail park and the M6 junctions 9 and 10",
+        "scenarios": "Motorway recoveries around M6 junctions 9 and 10, warehouse and delivery vans failing at loading bays, and accident clearance.",
+        "nearby": ["perry-barr-breakdown-recovery", "west-bromwich-breakdown-recovery", "dudley-breakdown-recovery", "sutton-coldfield-breakdown-recovery"],
+    },
+]
+
+AREA_BY_SLUG = {a["slug"]: a for a in AREAS}
+
+HEAD = """<!DOCTYPE html>
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Breakdown Recovery Halesowen | 24/7 Car &amp; Van Towing | Simpsons Recovery</title>
-  <meta name="description" content="24/7 breakdown recovery in Halesowen (B62 and B63). Typical arrival 25–35 minutes. Cars, vans and motorbikes recovered from 6.4 miles from the depot. Call a local operator on 07706 057962.">
+  <title>{title}</title>
+  <meta name="description" content="{description}">
   <meta name="robots" content="index, follow">
 
   <meta name="geo.region" content="GB-BIR">
-  <meta name="geo.placename" content="Halesowen, Birmingham">
+  <meta name="geo.placename" content="{name}, Birmingham">
 
-  <meta property="og:title" content="Breakdown Recovery Halesowen | Simpsons Breakdown Recovery Services Ltd">
-  <meta property="og:description" content="24/7 breakdown recovery in Halesowen (B62 and B63). Typical arrival 25–35 minutes. Cars, vans and motorbikes recovered from 6.4 miles from the depot. Call a local operator on 07706 057962.">
+  <meta property="og:title" content="{og_title}">
+  <meta property="og:description" content="{description}">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_GB">
   <meta property="og:image" content="../images/simpsons-white-van-recovery.jpg">
@@ -23,114 +185,7 @@
   <link rel="stylesheet" href="../css/style.css">
 
   <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": [
-        "AutoRepair",
-        "EmergencyService"
-      ],
-      "@id": "https://www.simpsonsbreakdownrecovery.co.uk/areas/halesowen-breakdown-recovery.html",
-      "name": "Simpsons Breakdown Recovery Services Ltd — Halesowen",
-      "url": "https://www.simpsonsbreakdownrecovery.co.uk/areas/halesowen-breakdown-recovery.html",
-      "telephone": "+447706057962",
-      "priceRange": "££",
-      "parentOrganization": {
-        "@type": "Organization",
-        "name": "Simpsons Breakdown Recovery Services Ltd"
-      },
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "289 Icknield Port Road, At the rear",
-        "addressLocality": "Edgbaston, Birmingham",
-        "addressRegion": "West Midlands",
-        "postalCode": "B16 0AG",
-        "addressCountry": "GB"
-      },
-      "areaServed": {
-        "@type": "AdministrativeArea",
-        "name": "Halesowen"
-      },
-      "openingHoursSpecification": [
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday"
-          ],
-          "opens": "00:00",
-          "closes": "23:59"
-        }
-      ],
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "229",
-        "bestRating": "5",
-        "worstRating": "1"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://www.simpsonsbreakdownrecovery.co.uk/areas/halesowen-breakdown-recovery.html#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://www.simpsonsbreakdownrecovery.co.uk/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Areas covered",
-          "item": "https://www.simpsonsbreakdownrecovery.co.uk/#areas"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Halesowen breakdown recovery"
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://www.simpsonsbreakdownrecovery.co.uk/areas/halesowen-breakdown-recovery.html#faq",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How quickly can you reach Halesowen?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Typically 25–35 minutes from your call, depending on traffic and which truck is nearest. We operate a 20-mile radius from our Edgbaston depot and Halesowen sits 6.4 miles from the depot."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Which Halesowen postcodes do you cover?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "We cover B62 and B63, along with the surrounding streets and main routes including the A456 Manor Way, M5 junction 3 and the Halesowen bypass."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Do you charge more for nights or weekends in Halesowen?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. We quote a fixed price before the truck is dispatched, whatever the hour, with no after-hours loading added later."
-          }
-        }
-      ]
-    }
-  ]
-}
+{jsonld}
   </script>
 </head>
 <body>
@@ -140,8 +195,8 @@
 <div class="ticker">
   <div class="shell ticker__inner">
     <div class="ticker__left">
-      <span class="ticker__live"><span class="dot"></span> HALESOWEN recovery on call</span>
-      <span class="ticker__detail">B62 and B63 &bull; typical arrival 25–35 minutes</span>
+      <span class="ticker__live"><span class="dot"></span> {tick_name} recovery on call</span>
+      <span class="ticker__detail">{postcodes} &bull; typical arrival {eta}</span>
     </div>
     <a class="ticker__call" href="tel:07706057962">07706 057962</a>
   </div>
@@ -171,7 +226,7 @@
     </nav>
 
     <div class="header-actions">
-      <a href="https://wa.me/447706057962?text=Hello%20Simpsons%20Recovery%2C%20I%20need%20help%20with%20my%20vehicle." target="_blank" rel="noopener" class="btn btn--green btn--sm">
+      <a href="{wa_generic}" target="_blank" rel="noopener" class="btn btn--green btn--sm">
         <svg class="icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.03 6.17c-3.18 0-5.76 2.59-5.76 5.77 0 1.3.38 2.27 1.02 3.28l-.58 2.13 2.18-.57c.98.58 1.91.93 3.14.93 3.18 0 5.77-2.59 5.77-5.77 0-3.19-2.58-5.77-5.77-5.77zm3.39 8.24c-.14.4-.84.77-1.17.82-.3.05-.68.06-1.09-.07-.25-.08-.58-.19-.99-.36-1.74-.75-2.87-2.5-2.96-2.62-.09-.11-.71-.94-.71-1.79s.45-1.27.61-1.45c.16-.17.35-.22.46-.22h.33c.11 0 .25-.04.39.3.14.35.49 1.2.53 1.29.04.09.07.19.01.3-.06.12-.09.19-.17.29l-.26.3c-.09.09-.18.18-.08.36.1.17.45.74.96 1.2.66.59 1.22.77 1.4.86.17.09.27.07.37-.04.1-.12.43-.51.55-.68.12-.17.23-.14.39-.09.16.06 1.01.48 1.18.56.17.09.29.13.33.2.05.07.05.42-.1.83z"/></svg>
         WhatsApp
       </a>
@@ -195,7 +250,7 @@
     <a href="../index.html#contact">Contact</a>
     <div class="mobile-nav__cta">
       <a href="tel:07706057962" class="btn btn--red btn--block">Call 07706 057962</a>
-      <a href="https://wa.me/447706057962?text=Hello%20Simpsons%20Recovery%2C%20I%20need%20help%20with%20my%20vehicle." target="_blank" rel="noopener" class="btn btn--green btn--block">Send WhatsApp location</a>
+      <a href="{wa_generic}" target="_blank" rel="noopener" class="btn btn--green btn--block">Send WhatsApp location</a>
     </div>
   </nav>
 </header>
@@ -208,25 +263,25 @@
       <span class="breadcrumb__sep" aria-hidden="true">/</span>
       <a href="../index.html#areas">Areas covered</a>
       <span class="breadcrumb__sep" aria-hidden="true">/</span>
-      <span aria-current="page">Halesowen breakdown recovery</span>
+      <span aria-current="page">{name} breakdown recovery</span>
     </div>
   </nav>
 
   <section class="hero">
     <div class="shell hero__grid">
       <div>
-        <span class="pill"><span class="dot"></span> 6.4 miles from the depot &bull; 20-mile radius</span>
+        <span class="pill"><span class="dot"></span> {distance} &bull; 20-mile radius</span>
 
-        <h1>Breakdown recovery <span class="hero__accent">Halesowen</span></h1>
+        <h1>Breakdown recovery <span class="hero__accent">{name}</span></h1>
 
-        <p class="lead hero__lead">Halesowen backs onto the M5 at junction 3, so we cover both town-centre jobs and motorway callouts from the same base. The hilly approach roads also mean we see more than our share of clutch and brake problems.</p>
+        <p class="lead hero__lead">{intro}</p>
 
         <div class="hero__cta">
           <a href="tel:07706057962" class="btn btn--red btn--lg">
             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
             Call 07706 057962
           </a>
-          <a href="https://wa.me/447706057962?text=Hello%20Simpsons%20Recovery%2C%20I%20have%20broken%20down%20in%20Halesowen.%20Here%20is%20my%20location:" target="_blank" rel="noopener" class="btn btn--green btn--lg">
+          <a href="{wa_area}" target="_blank" rel="noopener" class="btn btn--green btn--lg">
             <svg class="icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.03 6.17c-3.18 0-5.76 2.59-5.76 5.77 0 1.3.38 2.27 1.02 3.28l-.58 2.13 2.18-.57c.98.58 1.91.93 3.14.93 3.18 0 5.77-2.59 5.77-5.77 0-3.19-2.58-5.77-5.77-5.77zm3.39 8.24c-.14.4-.84.77-1.17.82-.3.05-.68.06-1.09-.07-.25-.08-.58-.19-.99-.36-1.74-.75-2.87-2.5-2.96-2.62-.09-.11-.71-.94-.71-1.79s.45-1.27.61-1.45c.16-.17.35-.22.46-.22h.33c.11 0 .25-.04.39.3.14.35.49 1.2.53 1.29.04.09.07.19.01.3-.06.12-.09.19-.17.29l-.26.3c-.09.09-.18.18-.08.36.1.17.45.74.96 1.2.66.59 1.22.77 1.4.86.17.09.27.07.37-.04.1-.12.43-.51.55-.68.12-.17.23-.14.39-.09.16.06 1.01.48 1.18.56.17.09.29.13.33.2.05.07.05.42-.1.83z"/></svg>
             Send WhatsApp location
           </a>
@@ -241,12 +296,12 @@
 
       <div class="panel panel--glow">
         <div class="panel__head">
-          <span class="panel__title">Halesowen at a glance</span>
+          <span class="panel__title">{name} at a glance</span>
         </div>
 
         <div class="stat-grid">
           <div class="stat">
-            <div class="stat__value">25–35 minutes</div>
+            <div class="stat__value">{eta}</div>
             <div class="stat__label">Typical arrival</div>
           </div>
           <div class="stat">
@@ -256,14 +311,14 @@
         </div>
 
         <ul class="check-list mb-lg">
-          <li><strong>Postcodes:</strong> B62 and B63</li>
-          <li><strong>Distance from depot:</strong> 6.4 miles from the depot</li>
-          <li><strong>Main roads:</strong> the A456 Manor Way, M5 junction 3 and the Halesowen bypass</li>
+          <li><strong>Postcodes:</strong> {postcodes}</li>
+          <li><strong>Distance from depot:</strong> {distance}</li>
+          <li><strong>Main roads:</strong> {roads}</li>
           <li>Cars, vans, 4x4s, motorbikes and non-runners</li>
           <li>Fixed price agreed before we set off</li>
         </ul>
 
-        <a href="tel:07706057962" class="btn btn--red btn--block">Confirm a Halesowen callout</a>
+        <a href="tel:07706057962" class="btn btn--red btn--block">Confirm a {name} callout</a>
       </div>
     </div>
   </section>
@@ -275,8 +330,8 @@
           <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         </span>
         <span>
-          <span class="metric__value">25–35 minutes</span>
-          <span class="metric__label">Typical Halesowen arrival</span>
+          <span class="metric__value">{eta}</span>
+          <span class="metric__label">Typical {name} arrival</span>
         </span>
       </div>
       <div class="metric">
@@ -313,14 +368,14 @@
     <div class="shell">
       <div class="section-head">
         <span class="eyebrow">Local knowledge</span>
-        <h2>Recovering in Halesowen</h2>
+        <h2>Recovering in {name}</h2>
         <p class="muted">What we actually get called out for here, and the places we know to plan for.</p>
       </div>
 
       <div class="grid grid-2">
         <article class="panel">
           <h3 class="mb-sm">Roads and landmarks we know</h3>
-          <p class="muted small mb-md">Halesowen town centre, Manor Way, the Cornbow Centre, M5 junction 3 and the surrounding lanes towards Romsley and Clent.</p>
+          <p class="muted small mb-md">{landmarks}.</p>
           <p class="muted small mb-0">
             Our drivers work these roads every day, so we know which junctions have nowhere safe to stop,
             which residential streets have room to swing a flatbed, and which car parks have a height
@@ -330,7 +385,7 @@
 
         <article class="panel">
           <h3 class="mb-sm">What we get called for</h3>
-          <p class="muted small mb-0">Clutch and brake failures on the steeper roads around Halesowen, breakdowns on Manor Way and motorway recoveries from M5 junction 3.</p>
+          <p class="muted small mb-0">{scenarios}</p>
         </article>
       </div>
     </div>
@@ -352,7 +407,7 @@
         <article class="panel">
           <div class="stat__value mb-sm">02</div>
           <h3 class="mb-sm">Fixed price, real ETA</h3>
-          <p class="muted small mb-0">We agree the price before anything moves, check live traffic and give you a realistic arrival window for Halesowen.</p>
+          <p class="muted small mb-0">We agree the price before anything moves, check live traffic and give you a realistic arrival window for {name}.</p>
         </article>
         <article class="panel">
           <div class="stat__value mb-sm">03</div>
@@ -366,7 +421,7 @@
   <section class="section">
     <div class="shell">
       <div class="section-head">
-        <span class="eyebrow">Services in Halesowen</span>
+        <span class="eyebrow">Services in {name}</span>
         <h2>What we can recover for you</h2>
       </div>
 
@@ -374,7 +429,7 @@
         <article class="service-row">
           <div class="service-row__num">01</div>
           <div class="service-row__name">
-            <h3>Car recovery Halesowen</h3>
+            <h3>Car recovery {name}</h3>
             <span class="service-row__tag">Most requested</span>
           </div>
           <p class="service-row__desc">Non-starters, clutch and gearbox failures, suspension damage and vehicles that cannot be driven — recovered to the garage you choose.</p>
@@ -485,29 +540,29 @@
     <div class="shell">
       <div class="section-head">
         <span class="eyebrow">Common questions</span>
-        <h2>Halesowen recovery FAQs</h2>
+        <h2>{name} recovery FAQs</h2>
       </div>
 
       <div class="faq">
         <div class="faq__item is-open">
           <button class="faq__q" type="button">
-            <span>How quickly can you reach Halesowen?</span>
+            <span>How quickly can you reach {name}?</span>
             <span class="faq__chev" aria-hidden="true">▾</span>
           </button>
-          <div class="faq__a"><div><p>Typically 25–35 minutes from your call, depending on traffic and which truck is nearest. We run a 20-mile radius from our Edgbaston depot, and Halesowen sits 6.4 miles from the depot. When you ring 07706 057962 you speak to a driver who can see where our vehicles are and give you a genuine arrival window.</p></div></div>
+          <div class="faq__a"><div><p>Typically {eta} from your call, depending on traffic and which truck is nearest. We run a 20-mile radius from our Edgbaston depot, and {name} sits {distance}. When you ring 07706 057962 you speak to a driver who can see where our vehicles are and give you a genuine arrival window.</p></div></div>
         </div>
 
         <div class="faq__item">
           <button class="faq__q" type="button">
-            <span>Which Halesowen postcodes do you cover?</span>
+            <span>Which {name} postcodes do you cover?</span>
             <span class="faq__chev" aria-hidden="true">▾</span>
           </button>
-          <div class="faq__a"><div><p>We cover B62 and B63, along with the surrounding streets and the main routes through Halesowen — the A456 Manor Way, M5 junction 3 and the Halesowen bypass. If you are just outside these postcodes, call with your location and we will tell you straight away whether we can get to you.</p></div></div>
+          <div class="faq__a"><div><p>We cover {postcodes}, along with the surrounding streets and the main routes through {name} — {roads}. If you are just outside these postcodes, call with your location and we will tell you straight away whether we can get to you.</p></div></div>
         </div>
 
         <div class="faq__item">
           <button class="faq__q" type="button">
-            <span>Do you charge more for nights or weekends in Halesowen?</span>
+            <span>Do you charge more for nights or weekends in {name}?</span>
             <span class="faq__chev" aria-hidden="true">▾</span>
           </button>
           <div class="faq__a"><div><p>No. We quote a fixed price before the truck is dispatched, whatever the hour. There is no after-hours loading added later and no charge for getting a price from us.</p></div></div>
@@ -515,7 +570,7 @@
 
         <div class="faq__item">
           <button class="faq__q" type="button">
-            <span>Can you get a car out of a car park in Halesowen?</span>
+            <span>Can you get a car out of a car park in {name}?</span>
             <span class="faq__chev" aria-hidden="true">▾</span>
           </button>
           <div class="faq__a"><div><p>Yes. Multi-storey and basement car parks are one of our specialities. We carry low-profile wheel skates, dollies and compact winching equipment, so a vehicle that will not start or will not roll can be moved out without damage to the bodywork, wheels or the building.</p></div></div>
@@ -523,7 +578,9 @@
       </div>
     </div>
   </section>
-</main>
+"""
+
+FOOTER = """</main>
 
 <div class="modal" id="legalModal" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="modal__box">
@@ -574,10 +631,7 @@
       <div class="footer-col">
         <h4>Nearby areas</h4>
         <ul class="footer-links">
-          <li><a href="dudley-breakdown-recovery.html">Dudley</a></li>
-          <li><a href="harborne-breakdown-recovery.html">Harborne</a></li>
-          <li><a href="west-bromwich-breakdown-recovery.html">West Bromwich</a></li>
-          <li><a href="edgbaston-breakdown-recovery.html">Edgbaston</a></li>
+{nearby_links}
           <li><a href="../index.html#areas">All 12 areas &rarr;</a></li>
         </ul>
       </div>
@@ -597,7 +651,7 @@
         <h4>Emergency</h4>
         <p class="muted small mb-md">Open 24 hours a day, 7 days a week.</p>
         <a href="tel:07706057962" class="btn btn--red btn--block mb-sm">Call 07706 057962</a>
-        <a href="https://wa.me/447706057962?text=Hello%20Simpsons%20Recovery%2C%20I%20need%20help%20with%20my%20vehicle." target="_blank" rel="noopener" class="btn btn--green btn--block mb-md">Send WhatsApp location</a>
+        <a href="{wa_generic}" target="_blank" rel="noopener" class="btn btn--green btn--block mb-md">Send WhatsApp location</a>
         <ul class="footer-links">
           <li><a href="https://share.google/FIO6KZSxKO3p8ohXX" target="_blank" rel="noopener">Google reviews</a></li>
           <li><a href="#" data-legal="Terms &amp; conditions">Terms &amp; conditions</a></li>
@@ -622,10 +676,149 @@
     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
     Call now
   </a>
-  <a href="https://wa.me/447706057962?text=Hello%20Simpsons%20Recovery%2C%20I%20have%20broken%20down%20in%20Halesowen.%20Here%20is%20my%20location:" target="_blank" rel="noopener" class="dock__btn btn--green">WhatsApp pin</a>
+  <a href="{wa_area}" target="_blank" rel="noopener" class="dock__btn btn--green">WhatsApp pin</a>
 </div>
 
 <script src="../js/main.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
+"""
+
+
+def wa_url(message):
+    return "https://wa.me/447706057962?text=" + message.replace(" ", "%20").replace(",", "%2C").replace("&", "%26")
+
+
+def build_jsonld(area):
+    return json.dumps({
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": ["AutoRepair", "EmergencyService"],
+                "@id": f"https://www.simpsonsbreakdownrecovery.co.uk/areas/{area['slug']}.html",
+                "name": f"Simpsons Breakdown Recovery Services Ltd — {area['name']}",
+                "url": f"https://www.simpsonsbreakdownrecovery.co.uk/areas/{area['slug']}.html",
+                "telephone": "+447706057962",
+                "priceRange": "££",
+                "parentOrganization": {
+                    "@type": "Organization",
+                    "name": "Simpsons Breakdown Recovery Services Ltd",
+                },
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "289 Icknield Port Road, At the rear",
+                    "addressLocality": "Edgbaston, Birmingham",
+                    "addressRegion": "West Midlands",
+                    "postalCode": "B16 0AG",
+                    "addressCountry": "GB",
+                },
+                "areaServed": {"@type": "AdministrativeArea", "name": area["name"]},
+                "openingHoursSpecification": [{
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                    "opens": "00:00",
+                    "closes": "23:59",
+                }],
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.9",
+                    "reviewCount": "229",
+                    "bestRating": "5",
+                    "worstRating": "1",
+                },
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": f"https://www.simpsonsbreakdownrecovery.co.uk/areas/{area['slug']}.html#breadcrumb",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.simpsonsbreakdownrecovery.co.uk/"},
+                    {"@type": "ListItem", "position": 2, "name": "Areas covered", "item": "https://www.simpsonsbreakdownrecovery.co.uk/#areas"},
+                    {"@type": "ListItem", "position": 3, "name": f"{area['name']} breakdown recovery"},
+                ],
+            },
+            {
+                "@type": "FAQPage",
+                "@id": f"https://www.simpsonsbreakdownrecovery.co.uk/areas/{area['slug']}.html#faq",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": f"How quickly can you reach {area['name']}?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": f"Typically {area['eta']} from your call, depending on traffic and which truck is nearest. We operate a 20-mile radius from our Edgbaston depot and {area['name']} sits {area['distance']}.",
+                        },
+                    },
+                    {
+                        "@type": "Question",
+                        "name": f"Which {area['name']} postcodes do you cover?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": f"We cover {area['postcodes']}, along with the surrounding streets and main routes including {area['roads']}.",
+                        },
+                    },
+                    {
+                        "@type": "Question",
+                        "name": f"Do you charge more for nights or weekends in {area['name']}?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "No. We quote a fixed price before the truck is dispatched, whatever the hour, with no after-hours loading added later.",
+                        },
+                    },
+                ],
+            },
+        ],
+    }, indent=2, ensure_ascii=False)
+
+
+def build_page(area):
+    nearby_links = "\n".join(
+        '          <li><a href="{slug}.html">{name}</a></li>'.format(
+            slug=slug, name=AREA_BY_SLUG[slug]["name"]
+        )
+        for slug in area["nearby"]
+        if slug in AREA_BY_SLUG
+    )
+
+    wa_area = wa_url(
+        f"Hello Simpsons Recovery, I have broken down in {area['name']}. Here is my location:"
+    )
+    wa_generic = wa_url("Hello Simpsons Recovery, I need help with my vehicle.")
+
+    head = HEAD.format(
+        title=f"Breakdown Recovery {area['name']} | 24/7 Car &amp; Van Towing | Simpsons Recovery",
+        og_title=f"Breakdown Recovery {area['name']} | Simpsons Breakdown Recovery Services Ltd",
+        description=(
+            f"24/7 breakdown recovery in {area['name']} ({area['postcodes']}). "
+            f"Typical arrival {area['eta']}. Cars, vans and motorbikes recovered from "
+            f"{area['distance']}. Call a local operator on 07706 057962."
+        ),
+        name=html.escape(area["name"]),
+        tick_name=html.escape(area["name"]).upper(),
+        postcodes=html.escape(area["postcodes"]),
+        eta=html.escape(area["eta"]),
+        distance=html.escape(area["distance"]),
+        roads=html.escape(area["roads"]),
+        intro=html.escape(area["intro"]),
+        landmarks=html.escape(area["landmarks"]),
+        scenarios=html.escape(area["scenarios"]),
+        jsonld=build_jsonld(area),
+        wa_area=wa_area,
+        wa_generic=wa_generic,
+    )
+
+    footer = FOOTER.format(nearby_links=nearby_links, wa_generic=wa_generic, wa_area=wa_area)
+    return head + footer
+
+
+def main():
+    os.makedirs(OUT_DIR, exist_ok=True)
+    for area in AREAS:
+        path = os.path.join(OUT_DIR, area["slug"] + ".html")
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(build_page(area))
+        print("wrote", path)
+
+
+if __name__ == "__main__":
+    main()

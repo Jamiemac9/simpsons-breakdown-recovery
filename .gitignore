@@ -1,7 +1,12 @@
-# Node / Build artifacts
+# Dependencies / tooling artifacts
 node_modules/
-.DS_Store
 .netlify/
+.DS_Store
 
-# Previews / Screenshots
-*.png
+# Local preview screenshots (repo root only — real site images stay tracked)
+/preview-*.png
+/_*.png
+
+# Scratch files used by the local verification scripts
+/_preview.html
+/_diag.html
