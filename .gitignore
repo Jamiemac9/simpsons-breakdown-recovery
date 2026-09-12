@@ -1,0 +1,7 @@
+# Node / Build artifacts
+node_modules/
+.DS_Store
+.netlify/
+
+# Previews / Screenshots
+*.png
