@@ -5,7 +5,7 @@ Edgbaston, Birmingham. Built as an APX Digital demo and proposal piece.
 
 - **Demo:** https://simpsons-recovery-birmingham.netlify.app
 - **Repository:** https://github.com/Jamiemac9/simpsons-breakdown-recovery
-- **Production domain (target):** https://www.simpsonsbreakdownrecovery.co.uk
+- **Live:** https://sb24tow.co.uk (bridge domain — see "Going live" below)
 
 ---
 
@@ -71,38 +71,45 @@ the top of each file if the source moves.
 
 ---
 
-## Going live on the customer's domain
+## Going live — ALREADY DONE
 
-Everything canonical in the HTML already points at
-`https://www.simpsonsbreakdownrecovery.co.uk`. To switch over:
+The site is live on **https://sb24tow.co.uk**, a **bridge domain**.
 
-1. **Remove the demo noindex.** In `netlify.toml`, delete the block between
-   `DEMO ONLY — remove this block` and `END DEMO ONLY`. *If you skip this, the
-   live site will be invisible to Google.*
+The customer's real domain (`simpsonsbreakdownrecovery.co.uk`) is held by a
+third-party management company that has not handed it over. sb24tow.co.uk was
+chosen so the site could go live immediately. The brand stays **Simpsons** —
+the reviews and trading history belong to the business, not the domain.
 
-2. **Confirm the domain** in `site_config.py` (`SITE_URL`), then run the four
-   build commands above and redeploy.
+Already applied at cutover:
+- `SITE_URL` in `site_config.py` points at `https://sb24tow.co.uk`, and every
+  canonical, the sitemap, the Open Graph URLs and the schema were regenerated
+  from it.
+- The demo `noindex` (`X-Robots-Tag`) block was **removed** from `netlify.toml`.
+  `audit.py` and `audit_live.py` now assert it is *absent* — an inverted guard,
+  so it cannot silently come back and de-index the live site.
 
-3. **Update the Google Business Profile** website field to the new domain.
+### When the real domain is handed over
 
-4. **Submit the sitemap** in Google Search Console:
-   `https://www.simpsonsbreakdownrecovery.co.uk/sitemap.xml`
+1. Change `SITE_URL` in `site_config.py` to the new domain.
+2. Rerun the four build commands above and redeploy.
+3. Add the new domain in Netlify and point its DNS at Netlify.
+4. **301** sb24tow.co.uk → the new domain (a `[[redirects]]` block), so any
+   equity earned on the bridge domain carries across.
+5. Use Search Console's **Change of Address** tool, and resubmit the sitemap.
 
-### Hosting options
+Do NOT build links or citations against sb24tow.co.uk in the meantime that you
+would have to unwind later.
 
-The site is plain static files, so any of these work:
+### Hosting notes
 
-- **Cloudflare Pages** — best fit. Free, global CDN, free SSL, and it can hold
-  the domain's DNS. To deploy: connect the GitHub repo, leave the build command
-  empty, set the output directory to `/`. Add the custom domain in Pages →
-  Custom domains, then point the registrar's nameservers at Cloudflare.
-  Runtime headers live in a `_headers` file (not `netlify.toml`).
-- **Namecheap** — fine as the *registrar*, but its shared hosting is slower and
-  you would lose the free CDN. Recommend using Namecheap only to buy/renew the
-  domain and pointing DNS at Cloudflare.
-- **Existing host** — the customer already owns
-  `simpsonsbreakdownrecovery.co.uk` (it runs the current WordPress site). The
-  cheapest path is to deploy here and repoint DNS, rather than buying a domain.
+Static files — any host works. This build is on **Netlify**, with DNS planned on
+**Netlify DNS** (`dns1–4.p01.nsone.net`).
+
+- Runtime headers live in `netlify.toml`; on Cloudflare Pages the equivalent is
+  a `_headers` file.
+- If email exists on the domain, recreate its MX/SPF/TXT records in the new DNS
+  provider **before** changing nameservers, or mail breaks the moment the NS
+  moves.
 
 ---
 

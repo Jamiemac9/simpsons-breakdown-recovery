@@ -9,17 +9,15 @@
 #  anything genuinely missing.
 #
 # ----------------------------------------------------------------------------
-#  IMPORTANT — BEFORE THIS GOES ON THE CUSTOMER'S REAL DOMAIN
+#  DEPLOY TARGET
 # ----------------------------------------------------------------------------
-#  The X-Robots-Tag block at the bottom of this file keeps the Netlify DEMO out
-#  of Google. The demo must never be indexed, or it competes with the real site.
+#  This build goes live on https://sb24tow.co.uk (a bridge domain — see
+#  site_config.py). The noindex header that kept the Netlify demo out of Google
+#  has been REMOVED, so the site is fully crawlable from here on.
 #
-#  The pages themselves are marked "index, follow" and their canonical URLs all
-#  point at the production domain, so the HTML is already Google-ready.
-#
-#  When you move to Cloudflare Pages / the customer's domain:
-#      DELETE the "DEMO ONLY" header block below.
-#  If you leave it in place, the live site will be invisible to Google.
+#  Canonicals, sitemap and schema all read from SITE_URL in site_config.py.
+#  If the domain changes, change it THERE and rebuild — never hand-edit the
+#  generated HTML.
 # ----------------------------------------------------------------------------
 
 [build]
@@ -61,15 +59,3 @@
   [headers.values]
     Content-Type = "application/xml; charset=utf-8"
     Cache-Control = "public, max-age=3600"
-
-# ============================================================================
-#  DEMO ONLY — remove this block when deploying to the customer's domain.
-#  It stops the Netlify preview competing with the real site in search.
-# ============================================================================
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Robots-Tag = "noindex, nofollow"
-# ============================================================================
-#  END DEMO ONLY
-# ============================================================================

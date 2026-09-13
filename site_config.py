@@ -9,14 +9,25 @@ to SITE_URL followed by a rebuild:
 Facts here are the ones the business states itself. Nothing is invented.
 """
 
-# --- Where the site will live in production --------------------------------
-# The customer's existing domain. While the demo runs on Netlify this is still
-# the correct canonical target: it tells search engines which URL is the real
-# one, so the demo never competes with the live site.
-SITE_URL = "https://www.simpsonsbreakdownrecovery.co.uk"
+# --- Where the site lives in production ------------------------------------
+# sb24tow.co.uk is a BRIDGE domain. The customer's real domain
+# (simpsonsbreakdownrecovery.co.uk) is still held by a third-party management
+# company that has not handed it over, so the site goes live on this one first
+# to get it earning. The brand stays Simpsons either way — the reviews and the
+# trading history live with the business, not the domain.
+#
+# This value must always match the domain actually serving the site: it drives
+# every canonical, the sitemap, the Open Graph URLs and the schema. Point it at
+# a domain that is not serving these pages and search engines are told the real
+# URL lives somewhere else — which de-indexes the new site on arrival.
+#
+# WHEN THE REAL DOMAIN IS HANDED OVER: change this one line, rebuild, deploy,
+# then 301 sb24tow.co.uk -> simpsonsbreakdownrecovery.co.uk and use Search
+# Console's Change of Address tool.
+SITE_URL = "https://sb24tow.co.uk"
 
-# The domain the demo is served from, excluded from indexing via a Netlify
-# header (see netlify.toml). Kept here for documentation only.
+# The Netlify host. Kept for documentation; after the DNS cutover the domain
+# above serves the same build.
 DEMO_URL = "https://simpsons-recovery-birmingham.netlify.app"
 
 SITE_NAME = "Simpsons Breakdown Recovery Services Ltd"

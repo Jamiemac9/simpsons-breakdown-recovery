@@ -16,7 +16,10 @@ import urllib.request
 import urllib.error
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "https://simpsons-recovery-birmingham.netlify.app"
-PROD = "https://www.simpsonsbreakdownrecovery.co.uk"
+# The domain the site actually serves from. This was a bridge domain at
+# cutover — sb24tow.co.uk while the customer's own domain stayed with a
+# third-party management company. Change here if it moves again.
+PROD = "https://sb24tow.co.uk"
 
 PAGES = ["/", "/404.html"] + [
     f"/areas/{s}.html" for s in [
@@ -64,8 +67,12 @@ for path in PAGES:
     is_404 = path == "/404.html"
 
     note(status == 200, f"{path}: expected 200, got {status}")
-    note("x-robots-tag" in {k.lower() for k in headers},
-         f"{path}: demo noindex header missing")
+    # The site is live, so the demo noindex header must be gone. If it is still
+    # being served, the live site is invisible to Google while everything else
+    # looks healthy.
+    note("x-robots-tag" not in {k.lower() for k in headers},
+         f"{path}: an X-Robots-Tag header is being served — the live site would be "
+         f"de-indexed")
 
     if not is_404:
         note(f'<link rel="canonical" href="{PROD}' in html,

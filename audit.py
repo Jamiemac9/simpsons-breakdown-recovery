@@ -216,12 +216,16 @@ def audit_site_level(pages: list[pathlib.Path], results: list[dict]) -> None:
         check("Disallow: /$" not in rb and "Disallow: /\n" not in rb, "site",
               "robots.txt blocks the whole site")
 
-    # --- netlify demo guard ----------------------------------------------
+    # --- deploy posture ----------------------------------------------------
+    # The site is now LIVE, so the guard is inverted: an X-Robots-Tag noindex
+    # header must NOT be present. If it ever comes back, the live site goes
+    # invisible to Google while every other check still passes.
     toml = ROOT / "netlify.toml"
     if toml.exists():
         t = toml.read_text(encoding="utf-8")
-        check("X-Robots-Tag" in t and "noindex" in t, "site",
-              "netlify.toml is missing the demo noindex header (demo could be indexed)")
+        check("X-Robots-Tag" not in t, "site",
+              "netlify.toml still has an X-Robots-Tag header — the LIVE site would be "
+              "invisible to Google (this block was the demo guard, removed at cutover)")
         check('from = "/*"' not in t or "status = 200" not in t, "site",
               "netlify.toml still contains a catch-all 200 rewrite (soft 404s)")
 

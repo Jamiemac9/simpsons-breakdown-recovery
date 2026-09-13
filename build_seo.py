@@ -18,10 +18,9 @@ def build_robots() -> str:
     return f"""# {cfg.SITE_NAME}
 # {cfg.SITE_URL}
 #
-# The site is intentionally crawlable. The Netlify demo copy is kept out of the
-# index with an X-Robots-Tag response header (see netlify.toml), not with a
-# robots.txt rule — a robots.txt disallow only stops crawling, it does not stop
-# a URL being indexed if it is linked from elsewhere.
+# The site is fully crawlable — it is the live site, not a demo. The noindex
+# header that guarded the Netlify preview has been removed (see netlify.toml).
+# /404.html is disallowed because it is an error page with no search value.
 
 User-agent: *
 Allow: /
