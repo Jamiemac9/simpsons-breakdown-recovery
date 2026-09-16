@@ -28,25 +28,43 @@ OLD_GRID = "grid-template-columns: 54px minmax(0, 240px) minmax(0, 1fr) 168px !i
 
 
 def old_hero_from_git(path: pathlib.Path) -> bool:
-    """Extract the previous hero JPEG from git history into a temp file."""
+    """Extract the pre-change hero JPEG from git history into a temp file.
+
+    The previous version of the image is found by revision rather than assumed
+    to be HEAD~1: the commit that replaced it is the newest commit touching the
+    file, so the version to compare against is the one before that.
+    """
     try:
+        log = subprocess.run(
+            ["git", "log", "-2", "--format=%H", "--", "images/hero-bg.jpg"],
+            cwd=ROOT, check=True, capture_output=True, text=True).stdout.split()
+        if len(log) < 2:
+            return False
         data = subprocess.run(
-            ["git", "show", "HEAD:images/hero-bg.jpg"],
+            ["git", "show", f"{log[1]}:images/hero-bg.jpg"],
             cwd=ROOT, check=True, capture_output=True).stdout
     except (subprocess.CalledProcessError, FileNotFoundError):
         return False
     path.write_bytes(data)
+    print(f"old hero from revision {log[1][:7]}")
     return True
 
 
 def main() -> None:
-    url = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8811/index.html"
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    after_only = "--after-only" in sys.argv
+    url = args[0] if args else "http://127.0.0.1:8811/index.html"
     DIAG.mkdir(exist_ok=True)
     ART.mkdir(parents=True, exist_ok=True)
 
+    # The prefix keeps live captures from the deployed domain separate from the
+    # local before/after pair, so neither overwrites the other.
+    suffix = "-live" if after_only else ""
+
     old_hero = DIAG / "old-hero-bg.jpg"
-    have_old_hero = old_hero_from_git(old_hero)
-    print(f"old hero recovered from git: {have_old_hero}")
+    have_old_hero = False if after_only else old_hero_from_git(old_hero)
+    if not after_only:
+        print(f"old hero recovered from git: {have_old_hero}")
 
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
@@ -81,23 +99,41 @@ def main() -> None:
         page.close()
 
         # --- service row 2 with the previous grid rule re-applied
-        page = open_page(1440, 900)
-        page.add_style_tag(content=f".service-row {{ {OLD_GRID} }}")
-        page.wait_for_timeout(300)
-        page.screenshot(path=str(DIAG / "before-service-row-2.png"), full_page=True,
-                        clip={"x": 0, "y": row2["y"] - 70, "width": 1440,
-                              "height": row2["h"] + 140})
-        page.close()
-
-        # --- hero backdrops, text hidden, old vs current image
-        hero = None
-        for name, use_old in (("before-hero-backdrop.png", True), ("after-hero-backdrop.png", False)):
+        if not after_only:
             page = open_page(1440, 900)
-            if use_old and have_old_hero:
-                page.add_style_tag(
-                    content=f".hero__bg {{ background-image: url('file://{old_hero}') !important; }}")
+            page.add_style_tag(content=f".service-row {{ {OLD_GRID} }}")
+            page.wait_for_timeout(300)
+            page.screenshot(path=str(DIAG / "before-service-row-2.png"), full_page=True,
+                            clip={"x": 0, "y": row2["y"] - 70, "width": 1440,
+                                  "height": row2["h"] + 140})
+            page.close()
+
+        # --- hero backdrops, text hidden, old vs current image. Against a live
+        #     domain there is no "old" state to photograph, so only the current
+        #     backdrop is captured.
+        #
+        #     The old image is swapped in by intercepting the image request
+        #     rather than by pointing CSS at file:// — Chrome refuses to load a
+        #     file:// URL into a page served over http, which silently leaves the
+        #     hero with no image at all and makes the "before" shot a lie.
+        old_hero_bytes = old_hero.read_bytes() if (have_old_hero and old_hero.exists()) else None
+        hero = None
+        shots = (("after-hero-backdrop.png", False),) if after_only else (
+            ("before-hero-backdrop.png", True), ("after-hero-backdrop.png", False))
+        for name, use_old in shots:
+            page = open_page(1440, 900)
+            if use_old and old_hero_bytes:
+                page.route(
+                    "**/hero-bg*.jpg*",
+                    lambda route: route.fulfill(status=200, content_type="image/jpeg",
+                                                body=old_hero_bytes))
+                page.reload(wait_until="load")
+                page.wait_for_timeout(700)
             page.add_style_tag(content=".hero__inner * { visibility: hidden !important; }")
             page.wait_for_timeout(400)
+            loaded = page.evaluate("""() => getComputedStyle(document.querySelector('.hero__bg'))
+                .backgroundImage""")
+            print(f"  {name}: backdrop css -> {loaded[:80]}")
             hero = page.evaluate("""() => { const b = document.querySelector('.hero')
                 .getBoundingClientRect();
                 return {x: Math.round(b.x), y: Math.round(b.y),
@@ -114,14 +150,20 @@ def main() -> None:
 
         browser.close()
 
-    for name, dest in (
+    pairs = (
+        ("after-hero-1440.png", f"simpsons{suffix}-after-hero-1440.png"),
+        ("after-hero-390.png", f"simpsons{suffix}-after-hero-390.png"),
+        ("after-hero-backdrop.png", f"simpsons{suffix}-after-hero-backdrop.png"),
+        ("after-service-row-2.png", f"simpsons{suffix}-after-service-row-fixed.png"),
+    ) if after_only else (
         ("after-hero-1440.png", "simpsons-after-hero-1440.png"),
         ("after-hero-390.png", "simpsons-after-hero-390.png"),
         ("before-hero-backdrop.png", "simpsons-before-hero-backdrop.png"),
         ("after-hero-backdrop.png", "simpsons-after-hero-backdrop.png"),
         ("before-service-row-2.png", "simpsons-before-service-row-overlap.png"),
         ("after-service-row-2.png", "simpsons-after-service-row-fixed.png"),
-    ):
+    )
+    for name, dest in pairs:
         shutil.copy(DIAG / name, ART / dest)
         print(f"wrote {ART / dest}")
 
