@@ -56,6 +56,21 @@ RATING_COUNT = "229"
 GOOGLE_REVIEWS_URL = "https://share.google/FIO6KZSxKO3p8ohXX"
 GOOGLE_MAPS_CID_URL = "https://maps.google.com/?cid=7538252664488705060"
 
+# --- Analytics -------------------------------------------------------------
+# GA4 property owned by the business. Emitted into the head of every page by
+# seo.analytics(); set to "" to remove the tag from the whole site.
+#
+# NOTE (PECR/GDPR): GA4 sets cookies, and UK law needs consent for those before
+# they are written. The tag is in place exactly as supplied by the client. If
+# consent is to be collected, gate this behind Consent Mode default-denied plus
+# a banner rather than firing it unconditionally — see the handover notes.
+GA4_ID = "G-FZKR7KYQ15"
+
+# --- Agency credit ---------------------------------------------------------
+# Shown in the footer of every page. apxdigital.io is the studio's own domain.
+AGENCY_NAME = "APX Digital"
+AGENCY_URL = "https://apxdigital.io"
+
 # --- Social profiles, used for schema.org sameAs ---------------------------
 # Only profiles confirmed to exist are listed. Wrong sameAs URLs actively hurt
 # entity matching in search, so add the rest only once the owner supplies the

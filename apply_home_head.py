@@ -42,6 +42,8 @@ def main() -> None:
         meta,
         gen.seo.favicon_links(""),
         "",
+        gen.seo.analytics(),
+        "",
         '  <script type="application/ld+json">',
         ld,
         "  </script>",

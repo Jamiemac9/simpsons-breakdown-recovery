@@ -11,6 +11,10 @@ node_modules/
 /_preview.html
 /_diag.html
 
+# Diagnostic captures from diag_layout.py / shoot_changes.py (evidence copies
+# live in ~/ApexDigital-Ops/artifacts/designs)
+/_diag/
+
 # Python bytecode from the build scripts
 __pycache__/
 *.pyc

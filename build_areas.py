@@ -217,6 +217,8 @@ def build_page(area: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
 
+{seo.analytics()}
+
   <script type="application/ld+json">
 {build_jsonld(area, faqs)}
   </script>
@@ -693,6 +695,7 @@ def build_page(area: dict) -> str:
 
     <div class="footer-bottom">
       <span>&copy; <span id="year">2026</span> Simpsons Breakdown Recovery Services Ltd. Registered in England &amp; Wales.</span>
+{seo.agency_credit()}
       <nav aria-label="Legal">
         <a href="#" data-legal="Terms &amp; conditions">Terms</a>
         <a href="#" data-legal="Privacy policy">Privacy</a>

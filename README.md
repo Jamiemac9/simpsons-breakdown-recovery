@@ -66,8 +66,29 @@ python3 build_logo.py    # logo lockup, favicons, OG share card
 python3 build_hero.py    # pre-blurred hero background
 ```
 
-Both read the master artwork from the Desktop asset folder; update the paths at
-the top of each file if the source moves.
+`build_logo.py` reads the master artwork from the Desktop asset folder; update
+the path at the top if the source moves. `build_hero.py` reads
+`assets/hero-source.jpg`, which is the one master asset kept **in this repo** —
+the client's asset folder no longer exists, so the repo copy is the only one
+that survives.
+
+### Analytics and the agency credit
+
+Both are site-wide and driven from `site_config.py`:
+
+- `GA4_ID` — the GA4 measurement ID. `seo.analytics()` writes the gtag snippet
+  into the head of every page (homepage block, area pages, 404). Set it to `""`
+  to drop the tag everywhere.
+- `AGENCY_NAME` / `AGENCY_URL` — the "Website made by APX Digital" footer
+  credit, emitted by `seo.agency_credit()`.
+
+After changing either, rerun the full rebuild (`build_areas.py`,
+`print_home_head.py`, `apply_home_head.py`).
+
+> **Consent:** the GA4 tag fires unconditionally, exactly as supplied. GA4 sets
+> cookies and UK PECR needs consent for those first. If the site is to collect
+> consent, this needs Consent Mode (default denied) plus a banner before the tag
+> is announced as compliant.
 
 ---
 
@@ -115,15 +136,36 @@ Static files — any host works. This build is on **Netlify**, with DNS planned 
 
 ## Verification tooling
 
-Run these after any change. All three are in the repo.
+Run these after any change. All are in the repo.
 
 ```bash
 python3 check_links.py                       # every internal link + anchor resolves
-node smoke.mjs <url> home                    # homepage behaviour (25 assertions)
-node smoke.mjs <url> area                    # location page behaviour (22 assertions)
+python3 audit.py                             # 790 on-page checks across all 14 pages
+node smoke.mjs <url> home                    # homepage behaviour (29 assertions)
+node smoke.mjs <url> area                    # location page behaviour (26 assertions)
 node shoot.mjs <url> out.png <w> <h>         # screenshot at a true device width
 node shoot.mjs <url> out.png 1440 900 --at="#work"   # screenshot one section
 ```
+
+Changes to the hero image, the service rows or the footer have their own
+measurement tools, because "looks fine" is not evidence:
+
+```bash
+# Overlap geometry for the service rows at 1001-1728px + hero backdrop capture.
+# Needs Playwright; run it with a python that has it installed.
+~/Sites/scrape-lead-finder/.venv/bin/python diag_layout.py http://127.0.0.1:8811/index.html
+python3 check_hero_contrast.py               # WCAG AA for h1 + lead on the backdrop
+python3 verify_analytics.py <url>            # GA4 loads, configures, credit renders
+~/Sites/scrape-lead-finder/.venv/bin/python shoot_changes.py   # before/after evidence
+```
+
+`diag_layout.py` measures each service-row CTA button against its grid column and
+the paragraph beside it — the original fixed 168px column made the "Emergency
+motorway tow" button overrun by 57px and collide with the copy by 39px.
+`check_hero_contrast.py` measures the real backdrop pixels under the hero text;
+it exits non-zero if the white heading or the lead paragraph drops below 4.5:1.
+`shoot_changes.py` rebuilds the "before" state from git and injected CSS rather
+than staged files, so the comparison cannot flatter the change.
 
 Regenerate the proposal screenshots (written to `demo/`, not committed):
 

@@ -49,19 +49,26 @@ let nextId = 1;
 const pending = new Map();
 const consoleErrors = [];
 
+// GA4 is a third-party script on the live site: if googletagmanager.com is slow,
+// blocked or unreachable (offline, ad-blocker, corporate proxy) the browser logs
+// a network error that says nothing about this site's own code. Those are
+// filtered out so the gate stays honest about first-party JavaScript.
+const THIRD_PARTY_NOISE = /(googletagmanager\.com|google-analytics\.com|gtag\/js)/;
+
+const isThirdPartyNoise = (text) => THIRD_PARTY_NOISE.test(String(text));
+
 ws.addEventListener('message', (event) => {
   const msg = JSON.parse(event.data);
   if (msg.method === 'Runtime.exceptionThrown') {
-    consoleErrors.push(
+    const description =
       msg.params?.exceptionDetails?.exception?.description ||
       msg.params?.exceptionDetails?.text ||
-      'unknown exception'
-    );
+      'unknown exception';
+    if (!isThirdPartyNoise(description)) consoleErrors.push(description);
   }
   if (msg.method === 'Runtime.consoleAPICalled' && msg.params.type === 'error') {
-    consoleErrors.push(
-      (msg.params.args || []).map((a) => a.value ?? a.description).join(' ')
-    );
+    const text = (msg.params.args || []).map((a) => a.value ?? a.description).join(' ');
+    if (!isThirdPartyNoise(text)) consoleErrors.push(text);
   }
   if (msg.id && pending.has(msg.id)) {
     const { resolve, reject } = pending.get(msg.id);

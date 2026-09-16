@@ -220,3 +220,31 @@ def favicon_links(prefix: str = "") -> str:
     return f"""  <link rel="icon" href="{p}images/icon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="{p}images/icon-512.png" sizes="512x512" type="image/png">
   <link rel="apple-touch-icon" href="{p}images/icon-180.png">"""
+
+
+def analytics(ga_id: str | None = None) -> str:
+    """GA4 (gtag.js) head tag for every page, or "" when no property is set.
+
+    Loaded async so it never blocks the hero on a slow mobile connection, and
+    kept in one place so the measurement ID lives in site_config alone and no
+    page can end up tagged differently from the rest.
+    """
+    ga_id = cfg.GA4_ID if ga_id is None else ga_id
+    if not ga_id:
+        return ""
+    return f"""  <!-- Google tag (gtag.js) — GA4 {ga_id} -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+
+    gtag('config', '{ga_id}');
+  </script>"""
+
+
+def agency_credit(*, new_tab: bool = True) -> str:
+    """Footer credit line: 'Website made by APX Digital' linking to the studio."""
+    target = ' target="_blank" rel="noopener"' if new_tab else ""
+    return (f'      <a class="footer-credit" href="{esc(cfg.AGENCY_URL)}"{target}>'
+            f'Website made by {esc(cfg.AGENCY_NAME)}</a>')

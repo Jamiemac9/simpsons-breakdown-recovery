@@ -33,6 +33,7 @@
   /* Text */
   --text: #ffffff;
   --text-body: #cbd5e1;
+  --text-bright: #e8eef6;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
 
@@ -495,7 +496,11 @@ p { max-width: 68ch; }
   -webkit-text-fill-color: transparent;
   color: var(--red);
 }
-.hero__lead { margin-bottom: 26px; }
+/* The paragraphs that sit directly on the hero photo need a lighter tone than
+   --text-body: measured against the sharpened backdrop, #cbd5e1 fell to 4.1:1
+   under the brightest patch of sky. #e8eef6 clears 4.5:1 for the area worst
+   case (check_hero_contrast.py). */
+.hero__lead { margin-bottom: 26px; color: var(--text-bright); }
 
 .pill {
   display: inline-flex;
@@ -849,7 +854,11 @@ p { max-width: 68ch; }
   border-radius: var(--r-md);
   padding: 20px;
   display: grid;
-  grid-template-columns: 54px minmax(0, 240px) minmax(0, 1fr) 168px;
+  /* The CTA column is sized to its button, not to a fixed 168px. A fixed width
+     clipped the wider labels ("Emergency motorway tow" is 225px) and, because
+     the button is flex-end aligned, the overflow ran left over the paragraph
+     beside it. max-content means the label can never collide with the copy. */
+  grid-template-columns: 54px minmax(0, 240px) minmax(0, 1fr) max-content;
   gap: 18px;
   align-items: center;
   transition: border-color 0.2s ease, background 0.2s ease;
@@ -878,6 +887,9 @@ p { max-width: 68ch; }
 }
 .service-row__desc { font-size: 0.88rem; color: var(--text-muted); }
 .service-row__cta { display: flex; justify-content: flex-end; }
+/* One line per label: a wrapped CTA changes the row height and reads as broken
+   next to a single-line paragraph. */
+.service-row__cta .btn { white-space: nowrap; }
 @media (max-width: 1000px) { .service-row__cta { justify-content: flex-start; } .service-row__cta .btn { width: 100%; } }
 
 /* ---------- Reviews carousel ---------- */
@@ -1162,6 +1174,9 @@ p { max-width: 68ch; }
 }
 .footer-bottom nav { display: flex; gap: 16px; }
 .footer-bottom nav a:hover { color: #fff; }
+/* Agency credit — a quiet link on the copyright line, not a badge. */
+.footer-credit { color: var(--text-muted); }
+.footer-credit:hover { color: #fff; text-decoration: underline; }
 
 /* ---------- Mobile action dock ---------- */
 .dock {
