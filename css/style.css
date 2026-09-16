@@ -464,12 +464,15 @@ p { max-width: 68ch; }
   background-repeat: no-repeat;
   /* The blur is baked into the file by build_hero.py, so the browser is not
      stretching a small source and then blurring it — which is what made this
-     looked pixelated. Only a hair of extra softness is applied here. */
-  background-image: url('../images/hero-bg-sm.jpg');
+     look pixelated. Only a hair of extra softness is applied here.
+     The ?v= query is deliberate: images are cached for a week under a stable
+     filename, so a rebuilt hero needs a new URL to reach returning visitors.
+     Bump it in BOTH rules below whenever build_hero.py is re-run. */
+  background-image: url('../images/hero-bg-sm.jpg?v=2');
 }
 
 @media (min-width: 900px) {
-  .hero__bg { background-image: url('../images/hero-bg.jpg'); }
+  .hero__bg { background-image: url('../images/hero-bg.jpg?v=2'); }
 }
 
 .hero__scrim {

@@ -72,6 +72,10 @@ the path at the top if the source moves. `build_hero.py` reads
 the client's asset folder no longer exists, so the repo copy is the only one
 that survives.
 
+> After re-running `build_hero.py`, bump the `?v=` query on both hero
+> background URLs in `css/style.css`. Images are cached for a week under a
+> stable filename, so without a new URL returning visitors keep the old hero.
+
 ### Analytics and the agency credit
 
 Both are site-wide and driven from `site_config.py`:

@@ -31,22 +31,28 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(self), camera=(), microphone=()"
 
-# Static assets are safe to cache hard. Filenames are stable, and a content
-# change is a rebuild plus the cache-busting query in the referencing markup.
+# Static assets are safe to cache hard. Filenames are stable, so a content
+# change to an image needs a NEW URL to reach returning visitors — that is why
+# the hero background is referenced as ../images/hero-bg.jpg?v=2 in style.css.
+# Bump that query when build_hero.py is re-run.
 [[headers]]
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=604800"
 
+# CSS and JS revalidate instead of being cached for a week. They change on
+# almost every deploy, they are small enough that a 304 costs nothing, and a
+# week-long cache meant a text or layout fix was invisible to anyone who had
+# visited before it shipped.
 [[headers]]
   for = "/css/*"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/js/*"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 # HTML should revalidate so content edits go live immediately.
 [[headers]]
