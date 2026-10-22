@@ -1,6 +1,7 @@
 # Dependencies / tooling artifacts
 node_modules/
 .netlify/
+.wrangler/
 .DS_Store
 
 # Local preview screenshots (repo root only — real site images stay tracked)

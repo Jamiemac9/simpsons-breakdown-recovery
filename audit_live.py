@@ -15,11 +15,10 @@ import sys
 import urllib.request
 import urllib.error
 
-BASE = sys.argv[1] if len(sys.argv) > 1 else "https://simpsons-recovery-birmingham.netlify.app"
-# The domain the site actually serves from. This was a bridge domain at
-# cutover — sb24tow.co.uk while the customer's own domain stayed with a
-# third-party management company. Change here if it moves again.
-PROD = "https://sb24tow.co.uk"
+BASE = sys.argv[1] if len(sys.argv) > 1 else "https://simpsonsbreakdownrecovery.co.uk"
+# Must match SITE_URL in site_config.py — the hostname that actually serves
+# the site (and therefore every live canonical).
+PROD = "https://simpsonsbreakdownrecovery.co.uk"
 
 PAGES = ["/", "/404.html"] + [
     f"/areas/{s}.html" for s in [

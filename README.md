@@ -3,9 +3,8 @@
 A fast, static, multi-page website for a 24/7 breakdown recovery business in
 Edgbaston, Birmingham. Built as an APX Digital demo and proposal piece.
 
-- **Demo:** https://simpsons-recovery-birmingham.netlify.app
+- **Live:** https://simpsonsbreakdownrecovery.co.uk
 - **Repository:** https://github.com/Jamiemac9/simpsons-breakdown-recovery
-- **Live:** https://sb24tow.co.uk (bridge domain — see "Going live" below)
 
 ---
 
@@ -96,45 +95,35 @@ After changing either, rerun the full rebuild (`build_areas.py`,
 
 ---
 
-## Going live — ALREADY DONE
+## Production — Cloudflare
 
-The site is live on **https://sb24tow.co.uk**, a **bridge domain**.
+The site is live on **https://simpsonsbreakdownrecovery.co.uk**.
 
-The customer's real domain (`simpsonsbreakdownrecovery.co.uk`) is held by a
-third-party management company that has not handed it over. sb24tow.co.uk was
-chosen so the site could go live immediately. The brand stays **Simpsons** —
-the reviews and trading history belong to the business, not the domain.
+`SITE_URL` in `site_config.py` is the single source of truth for every
+canonical, the sitemap, Open Graph URLs and schema. After changing it, rebuild
+with the four commands above before deploying.
 
-Already applied at cutover:
-- `SITE_URL` in `site_config.py` points at `https://sb24tow.co.uk`, and every
-  canonical, the sitemap, the Open Graph URLs and the schema were regenerated
-  from it.
-- The demo `noindex` (`X-Robots-Tag`) block was **removed** from `netlify.toml`.
-  `audit.py` and `audit_live.py` now assert it is *absent* — an inverted guard,
-  so it cannot silently come back and de-index the live site.
+### Deploy
 
-### When the real domain is handed over
+```bash
+npx wrangler login          # once per machine
+npx wrangler deploy         # uploads static assets + _headers
+```
 
-1. Change `SITE_URL` in `site_config.py` to the new domain.
-2. Rerun the four build commands above and redeploy.
-3. Add the new domain in Netlify and point its DNS at Netlify.
-4. **301** sb24tow.co.uk → the new domain (a `[[redirects]]` block), so any
-   equity earned on the bridge domain carries across.
-5. Use Search Console's **Change of Address** tool, and resubmit the sitemap.
+Config lives in `wrangler.jsonc`. Cache and security headers live in `_headers`
+(Cloudflare parses that file at deploy time; it is not served publicly).
+`netlify.toml` is legacy only.
 
-Do NOT build links or citations against sb24tow.co.uk in the meantime that you
-would have to unwind later.
+`audit.py` and `audit_live.py` assert that no sitewide `X-Robots-Tag: noindex`
+header is present — an inverted guard so a demo block cannot silently
+de-index production.
 
-### Hosting notes
+### Domain history
 
-Static files — any host works. This build is on **Netlify**, with DNS planned on
-**Netlify DNS** (`dns1–4.p01.nsone.net`).
-
-- Runtime headers live in `netlify.toml`; on Cloudflare Pages the equivalent is
-  a `_headers` file.
-- If email exists on the domain, recreate its MX/SPF/TXT records in the new DNS
-  provider **before** changing nameservers, or mail breaks the moment the NS
-  moves.
+The site briefly used the bridge domain `sb24tow.co.uk` while the real domain
+was still with a third-party management company. That cutover is finished.
+Do not point `SITE_URL`, citations or Search Console properties back at the
+bridge.
 
 ---
 
@@ -174,7 +163,7 @@ than staged files, so the comparison cannot flatter the change.
 Regenerate the proposal screenshots (written to `demo/`, not committed):
 
 ```bash
-B=https://simpsons-recovery-birmingham.netlify.app
+B=https://simpsonsbreakdownrecovery.co.uk
 node shoot.mjs "$B/"                    demo/01-desktop-hero.png 1440 900
 node shoot.mjs "$B/"                    demo/02-mobile-hero.png    390 844
 node shoot.mjs "$B/"                    demo/03-our-work.png      1440 1000 --at="#work"

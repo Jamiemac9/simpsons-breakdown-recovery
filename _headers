@@ -1,0 +1,34 @@
+# Cloudflare Workers / Pages headers.
+# Parsed at deploy time; this file is not served as a public asset.
+#
+# Keep in sync with the intent in netlify.toml (legacy). The live host is
+# Cloudflare — custom domains for this project are on
+# simpsonsbreakdownrecovery.co.uk.
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(self), camera=(), microphone=()
+
+# Images keep a week-long browser cache. Filenames are stable, so a content
+# change needs a new URL — bump the ?v= query on hero backgrounds in
+# css/style.css after rebuild_hero.py.
+/images/*
+  Cache-Control: public, max-age=604800
+
+# CSS and JS revalidate. They change on almost every deploy and are small
+# enough that a 304 is cheap; a long max-age made layout fixes invisible.
+/css/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/js/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# HTML must revalidate so content edits go live immediately.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sitemap.xml
+  Content-Type: application/xml; charset=utf-8
+  Cache-Control: public, max-age=3600

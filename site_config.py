@@ -1,33 +1,26 @@
 """Single source of truth for the site's identity, contact details and SEO data.
 
-Every generated page, the sitemap and robots.txt read from here, so moving the
-site from the Netlify demo to the customer's own domain is a one-line change
-to SITE_URL followed by a rebuild:
+Every generated page, the sitemap and robots.txt read from here, so changing
+domain is a one-line change to SITE_URL followed by a rebuild:
 
     python3 build_areas.py && python3 build_seo.py
+    python3 print_home_head.py && python3 apply_home_head.py
 
 Facts here are the ones the business states itself. Nothing is invented.
 """
 
 # --- Where the site lives in production ------------------------------------
-# sb24tow.co.uk is a BRIDGE domain. The customer's real domain
-# (simpsonsbreakdownrecovery.co.uk) is still held by a third-party management
-# company that has not handed it over, so the site goes live on this one first
-# to get it earning. The brand stays Simpsons either way — the reviews and the
-# trading history live with the business, not the domain.
+# Production domain. Canonicals, sitemap, Open Graph URLs and schema all
+# read from this value — it must match the hostname that actually serves
+# these pages.
 #
-# This value must always match the domain actually serving the site: it drives
-# every canonical, the sitemap, the Open Graph URLs and the schema. Point it at
-# a domain that is not serving these pages and search engines are told the real
-# URL lives somewhere else — which de-indexes the new site on arrival.
-#
-# WHEN THE REAL DOMAIN IS HANDED OVER: change this one line, rebuild, deploy,
-# then 301 sb24tow.co.uk -> simpsonsbreakdownrecovery.co.uk and use Search
-# Console's Change of Address tool.
-SITE_URL = "https://sb24tow.co.uk"
+# History: the site briefly lived on the bridge domain sb24tow.co.uk while
+# the real domain was still with a third-party management company. That
+# cutover is done; do not point SITE_URL back at the bridge.
+SITE_URL = "https://simpsonsbreakdownrecovery.co.uk"
 
-# The Netlify host. Kept for documentation; after the DNS cutover the domain
-# above serves the same build.
+# Former Netlify demo host. Kept only so audit scripts can assert it is
+# absent from live markup. Not a production URL.
 DEMO_URL = "https://simpsons-recovery-birmingham.netlify.app"
 
 SITE_NAME = "Simpsons Breakdown Recovery Services Ltd"

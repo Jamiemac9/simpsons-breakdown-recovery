@@ -18,8 +18,8 @@ def build_robots() -> str:
     return f"""# {cfg.SITE_NAME}
 # {cfg.SITE_URL}
 #
-# The site is fully crawlable — it is the live site, not a demo. The noindex
-# header that guarded the Netlify preview has been removed (see netlify.toml).
+# The site is fully crawlable — it is the live production site. Do not add
+# a sitewide noindex header in _headers / netlify.toml.
 # /404.html is disallowed because it is an error page with no search value.
 
 User-agent: *

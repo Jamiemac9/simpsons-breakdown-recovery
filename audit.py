@@ -217,21 +217,27 @@ def audit_site_level(pages: list[pathlib.Path], results: list[dict]) -> None:
               "robots.txt blocks the whole site")
 
     # --- deploy posture ----------------------------------------------------
-    # The site is now LIVE, so the guard is inverted: an X-Robots-Tag noindex
+    # The site is LIVE, so the guard is inverted: an X-Robots-Tag noindex
     # header must NOT be present. If it ever comes back, the live site goes
     # invisible to Google while every other check still passes.
+    for headers_file, label in (
+        (ROOT / "_headers", "_headers"),
+        (ROOT / "netlify.toml", "netlify.toml"),
+    ):
+        if headers_file.exists():
+            t = headers_file.read_text(encoding="utf-8")
+            check("X-Robots-Tag" not in t, "site",
+                  f"{label} still has an X-Robots-Tag header — the LIVE site would be "
+                  "invisible to Google")
     toml = ROOT / "netlify.toml"
     if toml.exists():
         t = toml.read_text(encoding="utf-8")
-        check("X-Robots-Tag" not in t, "site",
-              "netlify.toml still has an X-Robots-Tag header — the LIVE site would be "
-              "invisible to Google (this block was the demo guard, removed at cutover)")
         check('from = "/*"' not in t or "status = 200" not in t, "site",
               "netlify.toml still contains a catch-all 200 rewrite (soft 404s)")
 
     # --- required files ---------------------------------------------------
     for name in ("index.html", "404.html", "robots.txt", "sitemap.xml",
-                 "css/style.css", "js/main.js", "netlify.toml"):
+                 "css/style.css", "js/main.js", "_headers", "wrangler.jsonc"):
         check((ROOT / name).exists(), "site", f"required file missing: {name}")
 
     # --- images referenced by og:image exist -----------------------------

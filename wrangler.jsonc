@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Cloudflare Pages project (Git + direct upload). Name must match the
+  // dashboard project that serves simpsonsbreakdownrecovery.co.uk.
+  "name": "simpsons-breakdown-recovery",
+  "pages_build_output_dir": ".",
+  // Set this to today's date
+  "compatibility_date": "2026-10-22"
+}
